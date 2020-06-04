@@ -1,4 +1,5 @@
 import pygame
+from pygame import mixer
 from pygame.locals import *
 import random
 
@@ -13,6 +14,10 @@ pygame.display.set_caption('Hardest Game')
 # Background
 background = pygame.image.load('background.png')
 
+# Sound
+mixer.music.load("SoundTrack/hardestGameThemeSong.mp3")
+mixer.music.play(-1)
+
 #Goal
 startPlaceX = [100]
 endPlaceX = [480]
@@ -25,9 +30,15 @@ tamBlocks = 20 #qntd de pixels que os objetos ocupam -- no caso matrix cada elem
 game_over = False
 
 #player
-player = [300, 300]
+playerStartX = 40
+playerStartY = 300
+
+def startPlayerPosition():
+    return [playerStartX, playerStartY]
+
+player = startPlayerPosition()
 player_skin = pygame.Surface((tamBlocks,tamBlocks))
-player_skin.fill((255,255,255)) #White
+player_skin.fill((255,0,0))
 
 # Macro definition for player movement.
 UP = 0
@@ -46,7 +57,7 @@ distXBetweenEnemies = 0
 distYBetweenEnemies = 100
 
 blue_skin = pygame.Surface((tamBlocks,tamBlocks))
-blue_skin.fill((0,0,255)) #White
+blue_skin.fill((0,0,255))
 
 enemyImg = []
 enemyX = []
@@ -63,6 +74,7 @@ for i in range(num_of_enemies):
     enemyY_change.append(tamBlocks)
     x_enemyIni += distXBetweenEnemies
     y_enemyIni += distYBetweenEnemies
+
 
 def enemy(x, y, i):
     screen.blit(enemyImg[i], (x, y))
@@ -113,13 +125,15 @@ while not game_over:
     # Check if player collided with enemies
     for i in range(num_of_enemies):
         if(collision(player,i)):
-            game_over = True
+            punchSound = mixer.Sound("SoundTrack/punch.wav")
+            punchSound.play()
+            player = startPlayerPosition()
             break
 
     playerChangeY = 0
     playerChangeX = 0
 
-        # Actually make the Player move.
+    # Actually make the Player move.
     if my_direction == UP and player[1] > 0:
         playerChangeY = -tamBlocks
     if my_direction == DOWN  and player[1] < height - tamBlocks:
@@ -128,10 +142,8 @@ while not game_over:
         playerChangeX = tamBlocks
     if my_direction == LEFT and player[0] > 0:
         playerChangeX = -tamBlocks
-    print(player)
 
     player = (player[0] + playerChangeX, player[1] + playerChangeY)
-
     #Player movement
     screen.blit(player_skin,player)
 
