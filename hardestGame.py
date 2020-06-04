@@ -85,6 +85,15 @@ def collision(player, i):
 def check_end(player):
     return (player[0] > endPlaceX[0]) and (endPlaceY[0] <= player[1] <= endPlaceY[1])
 
+font = pygame.font.Font('freesansbold.ttf', 18)
+score = 0
+
+def show_score():
+    score_font = font.render('Deaths: %s' % (score), True, (255, 255, 255))
+    score_rect = score_font.get_rect()
+    score_rect.topleft = (600 - 120, 10)
+    screen.blit(score_font, score_rect)
+
 while not game_over:
 
     clock.tick(10)
@@ -127,6 +136,7 @@ while not game_over:
         if(collision(player,i)):
             punchSound = mixer.Sound("SoundTrack/punch.wav")
             punchSound.play()
+            score += 1 #number of deaths
             player = startPlayerPosition()
             break
 
@@ -147,6 +157,7 @@ while not game_over:
     #Player movement
     screen.blit(player_skin,player)
 
+    show_score()
     #check if is the end point
     if (check_end(player)):
         game_over = True
