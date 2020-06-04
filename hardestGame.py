@@ -2,6 +2,7 @@ import pygame
 from pygame import mixer
 from pygame.locals import *
 import random
+import background as bg
 
 pygame.init()
 
@@ -11,33 +12,22 @@ width = 600
 screen = pygame.display.set_mode((width, height))
 pygame.display.set_caption('Hardest Game')
 
+blocks_size = 30 #qntd de pixels que os objetos ocupam -- no caso matrix cada elemento da matrix tem 10px
+tam_player = blocks_size-10
+num_of_enemies = 4
+
 # Background
-background = pygame.image.load('background.png')
+background = bg.get_background(blocks_size, num_of_enemies*blocks_size, width, height)
 
 # Sound
 mixer.music.load("SoundTrack/hardestGameThemeSong.mp3")
 mixer.music.play(-1)
 
-#Goal
-startPlaceX = [100]
-endPlaceX = [480]
-endPlaceY = [0,20]
-
 clock = pygame.time.Clock()
-
-tamBlocks = 20 #qntd de pixels que os objetos ocupam -- no caso matrix cada elemento da matrix tem 10px
 
 game_over = False
 
-#player
-playerStartX = 40
-playerStartY = 300
-
-def startPlayerPosition():
-    return [playerStartX, playerStartY]
-
-player = startPlayerPosition()
-player_skin = pygame.Surface((tamBlocks,tamBlocks))
+player_skin = pygame.Surface((tam_player,tam_player))
 player_skin.fill((255,0,0))
 
 # Macro definition for player movement.
@@ -49,117 +39,135 @@ STOP = 4
 
 my_direction = STOP
 
-# Enemy
-x_enemyIni = 400
-y_enemyIni = 60
-
-distXBetweenEnemies = 0
-distYBetweenEnemies = 100
-
-blue_skin = pygame.Surface((tamBlocks,tamBlocks))
-blue_skin.fill((0,0,255))
-
-enemyImg = []
-enemyX = []
-enemyY = []
-enemyX_change = []
-enemyY_change = []
-num_of_enemies = 4
-
-for i in range(num_of_enemies):
-    enemyImg.append(blue_skin)
-    enemyX.append(x_enemyIni)
-    enemyY.append(y_enemyIni)
-    enemyX_change.append(tamBlocks)
-    enemyY_change.append(tamBlocks)
-    x_enemyIni += distXBetweenEnemies
-    y_enemyIni += distYBetweenEnemies
-
-
-def enemy(x, y, i):
-    screen.blit(enemyImg[i], (x, y))
-
-def collision(player, i):
-    return (player[0] == enemyX[i]) and (player[1] == enemyY[i])
-
-def check_end(player):
-    return (player[0] > endPlaceX[0]) and (endPlaceY[0] <= player[1] <= endPlaceY[1])
+enemies_direction = []
 
 font = pygame.font.Font('freesansbold.ttf', 18)
 score = 0
 
+def make_enemy_skin():
+	blue_skin = pygame.Surface([tam_player,tam_player])
+	blue_skin.fill((0,0,0))
+	blue_skin.set_colorkey((0,0,0))
+	pygame.draw.ellipse(blue_skin, (0,0,255),(0, 0, tam_player-2, tam_player-2), 0)
+	return blue_skin
+
+def make_enemies():
+	enemies = []
+	enemies_rect = []
+	y_enemy_init = (height - (num_of_enemies*blocks_size))/2
+	y = y_enemy_init+blocks_size/2
+	for i in range(num_of_enemies):
+		enemy = make_enemy_skin()
+		rect = enemy.get_rect()
+		if not i%2:	
+			rect.left = background.play_area.left
+			enemies_direction.append(1)
+		else:
+			rect.right = background.play_area.right
+			enemies_direction.append(-1)	
+		rect.centery = y	
+		enemies.append(enemy)
+		enemies_rect.append(rect)
+		y += blocks_size
+	return enemies, enemies_rect
+	
+def move_enemy(i):
+	enemies_rect[i].centerx = enemies_rect[i].centerx + (tam_player)*enemies_direction[i]
+	if (enemies_rect[i].right >= background.play_area.right):
+		enemies_direction[i] = -1
+	elif (enemies_rect[i].left <= background.play_area.left):
+		enemies_direction[i] = 1
+	enemy(i)
+
+def enemy(i):
+	screen.blit(enemies[i], enemies_rect[i])
+
+def collision(player, i):
+	return enemies_rect[i].colliderect(player)
+
+def check_end():
+	return background.check_final(player_rect)
+
 def show_score():
-    score_font = font.render('Deaths: %s' % (score), True, (255, 255, 255))
-    score_rect = score_font.get_rect()
-    score_rect.topleft = (600 - 120, 10)
-    screen.blit(score_font, score_rect)
+	score_font = font.render('Deaths: %s' % (score), True, (255, 255, 255))
+	score_rect = score_font.get_rect()
+	score_rect.topleft = (600 - 120, 10)
+	screen.blit(score_font, score_rect)
+
+def startPlayerPosition():
+	player_rect.x = background.init_area.centerx
+	player_rect.y = background.init_area.centery
+	return [player_rect.x, player_rect.y]
+
+enemies, enemies_rect = make_enemies()
+player_rect = player_skin.get_rect()
+player = startPlayerPosition()
 
 while not game_over:
 
-    clock.tick(10)
-    screen.fill((0,0,0))
-    screen.blit(background, (0, 0))
-    my_direction = STOP
+	clock.tick(10)
+	background.draw_background(screen)
+	my_direction = STOP
 
-    for event in pygame.event.get():
-        if event.type == QUIT:
-            pygame.quit()
-            exit()
+	for event in pygame.event.get():
+		if event.type == QUIT:
+			pygame.quit()
+			exit()
 
-        if event.type == KEYDOWN:
-            if event.key == K_UP:
-                my_direction = UP
-            if event.key == K_DOWN:
-                my_direction = DOWN
-            if event.key == K_LEFT:
-                my_direction = LEFT
-            if event.key == K_RIGHT:
-                my_direction = RIGHT
-            #else:
-                #my_direction = STOP
+	if event.type == KEYDOWN:
+		if event.key == K_UP:
+			my_direction = UP
+		if event.key == K_DOWN:
+			my_direction = DOWN
+		if event.key == K_LEFT:
+			my_direction = LEFT
+		if event.key == K_RIGHT:
+			my_direction = RIGHT
+		#else:
+			#my_direction = STOP
 
+	# Enemy Movement
+	for i in range(num_of_enemies):
+		move_enemy(i)
 
-    # Enemy Movement
-    for i in range(num_of_enemies):
-        enemyX[i] += enemyX_change[i]
-        if enemyX[i] <= startPlaceX[0]: #limite maximo para os inimigos se movimentarem
-            enemyX_change[i] = tamBlocks
-            #enemyY[i] += enemyY_change[i]
-        elif enemyX[i] >= endPlaceX[0]: #limite maximo para os inimigos se movimentarem
-            enemyX_change[i] = -tamBlocks
-            #enemyY[i] += enemyY_change[i]
+	# Check if player collided with enemies
+	for i in range(num_of_enemies):
+		if(collision(player_rect, i)):
+			punchSound = mixer.Sound("SoundTrack/punch.wav")
+			punchSound.play()
+			score += 1 #number of deaths
+			player = startPlayerPosition()
+			break
 
-        enemy(enemyX[i], enemyY[i], i)
+	playerChangeY = 0
+	playerChangeX = 0
 
-    # Check if player collided with enemies
-    for i in range(num_of_enemies):
-        if(collision(player,i)):
-            punchSound = mixer.Sound("SoundTrack/punch.wav")
-            punchSound.play()
-            score += 1 #number of deaths
-            player = startPlayerPosition()
-            break
+	test_move_rec = player_rect.copy()
 
-    playerChangeY = 0
-    playerChangeX = 0
+	move = tam_player
 
-    # Actually make the Player move.
-    if my_direction == UP and player[1] > 0:
-        playerChangeY = -tamBlocks
-    if my_direction == DOWN  and player[1] < height - tamBlocks:
-        playerChangeY = tamBlocks
-    if my_direction == RIGHT and player[0] < width - tamBlocks:
-        playerChangeX = tamBlocks
-    if my_direction == LEFT and player[0] > 0:
-        playerChangeX = -tamBlocks
+	while move: #get max move possible
+		if my_direction == UP:
+			test_move_rec.top = test_move_rec.top - move
+		if my_direction == DOWN:
+			test_move_rec.bottom = test_move_rec.bottom + move
+		if my_direction == LEFT:
+			test_move_rec.left = test_move_rec.left - move
+		if my_direction == RIGHT:
+			test_move_rec.right = test_move_rec.right + move
 
-    player = (player[0] + playerChangeX, player[1] + playerChangeY)
-    #Player movement
-    screen.blit(player_skin,player)
+		if background.check_borders(test_move_rec):
+			player_rect = test_move_rec.copy()
+			break
+		else:
+			move -= 5
+			test_move_rec = player_rect.copy()
 
-    show_score()
-    #check if is the end point
-    if (check_end(player)):
-        game_over = True
+	screen.blit(player_skin, player_rect)
 
-    pygame.display.update()
+	show_score()
+	#check if is the end point
+	if (check_end()):
+		game_over = True
+
+	pygame.display.update()
