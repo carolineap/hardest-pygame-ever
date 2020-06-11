@@ -1,6 +1,6 @@
 import math
 import pygame
-
+import random
 from src.Controller import Controller
 
 
@@ -15,14 +15,19 @@ class Player:
 
         self.velocity = pygame.Vector2(100, 100)
 
-        self.color = (255, 0, 0)
+        self.color = (255, random.randint(0, 255), 0)
         self.current_level = None
+
+        self.dead = False
 
     def set_init_pos(self, init_pos_vec : pygame.Vector2):
         self.position = init_pos_vec
 
     def set_current_level(self, level):
         self.current_level = level
+
+    def set_dead(self, bool):
+        self.dead = bool
 
     def move(self, mov_vector : pygame.Vector2, dt : float):
         # if mov_vector.length() != 0:
@@ -43,7 +48,7 @@ class Player:
         min_delta = pygame.Vector2(norm_vector)
 
         position_x_y = self.position + min_delta
-        print(position_x_y)
+        #print(position_x_y)
         collision_box_x_y = pygame.Rect(position_x_y.x, position_x_y.y, self.width, self.height)
         if self.current_level.main_area.contains(collision_box_x_y) and self.current_level.check_if_inside(
                 collision_box_x_y):
@@ -69,7 +74,6 @@ class Player:
 
     def draw_player(self, surface : pygame.Surface):
         ret = pygame.draw.rect(surface, self.color, (self.position.x, self.position.y, self.width, self.height))
-        print(ret)
 
     def collision_box(self):
         return pygame.Rect(self.position.x, self.position.y, self.width, self.height)
@@ -78,6 +82,10 @@ class Player:
         player_box = self.collision_box()
         for enemy in enemies:
             if player_box.colliderect(enemy.collision_box()):
+                self.dead = True
                 return True
 
         return False
+
+    def get_rect(self):
+        return pygame.Rect(self.position.x, self.position.y, self.width, self.height)

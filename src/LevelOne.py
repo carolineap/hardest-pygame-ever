@@ -134,6 +134,9 @@ class LevelOne():
 
         self.draw_level_in_surface()
 
+        self.init_bridge = pygame.Vector2(self.init_area.right, self.init_area.bottom)
+        self.end_bridge = pygame.Vector2(self.end_area.left, self.end_area.top)
+
     def check_if_inside(self, rect):
         return len(rect.collidelistall(self.non_walkable_areas)) == 0
         # for area in self.walkable_areas:
@@ -141,6 +144,12 @@ class LevelOne():
         #         return True
         #
         # return False
+
+    def distance(self, player):
+        if self.init_area.contains(player.get_rect()):
+            return player.position.distance_to(self.init_bridge) + self.init_bridge.distance_to(self.end_bridge)
+
+        return player.position.distance_to(self.end_bridge)
 
     def draw_level_in_surface(self):
         self.surface.fill(self.background_color)
@@ -150,11 +159,10 @@ class LevelOne():
         self.init_area = pygame.draw.polygon(self.surface, (140, 220, 140), self.init_points)
         self.end_area = pygame.draw.polygon(self.surface, (140, 220, 140), self.end_points)
 
-
 if __name__ == "__main__":
     pygame.init()
     level = LevelOne(30)
-    print(level.points)
+    #print(level.points)
 
     width = 1366
     height = 768

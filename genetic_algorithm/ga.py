@@ -5,37 +5,37 @@ class Individual:
     
     def __init__(self, state):
         self.state = state
-        self.max_position = (-1, -1)
+        self.best_position = 1000
+        self.action_best_position = -1
         self.win = False
-        self.action_max_position = 0
         
     def fitness(self): 
-        return self.max_position[0]
+        return self.best_position+self.action_best_position #menor dist para o goal com o menor numero de acoes
 
-            
 def crossover(s1, s2, point): 
     return s1[:point] + s2[point:], s2[:point] + s1[point:]
 
-def selection(population): #just remove the worst individual and clone the best
+def selection(population): 
     all_fitness = [individual.fitness() for individual in population]
     
     total = sum(all_fitness)
-    p = sorted([fitness/total for fitness in all_fitness], reverse=True)
-
-    min_i = p.index(min(p))
-    max_i = p.index(max(p))
-
-    new = population.copy()
+    p = [(1-(fitness/total)) for fitness in all_fitness]
     
-    new.pop(min_i)
-    new.append(population[max_i])
+    new = random.choices(population, p, k=2)
 
-    random.shuffle(new)
+    return new[0], new[1]
 
-    return new
+def increase_state(population, n_state, d):
+    for individual in population:
+        state = individual.state
+        while len(state) < n_state:
+            state.extend([random.choice(list(Actions))]*random.randint(1, d))
+        individual.state = state[:n_state]
+
+    return population
     
-def mutation(state, point, d): 
-    d = random.randint(3, d)
+def mutation(state, point, d):
+    d = random.randint(1, d) 
     state[point:point+d] = [random.choice(list(Actions))]*d
     return state
 
@@ -44,6 +44,6 @@ def create_initial_population(size, n_state, d):
     for i in range(size):
         state = []
         while len(state) < n_state:
-            state.extend([random.choice(list(Actions))]*random.randint(3, d)) #repeat an action at most d times
+            state.extend([random.choice(list(Actions))]*random.randint(1, d)) #repeat an action at most d times
         population.append(Individual(state[:n_state]))
     return population
