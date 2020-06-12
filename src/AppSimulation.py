@@ -26,13 +26,6 @@ class AppSimulation:
         self.background_color = (200, 200, 200)
         self.level_one = LevelOne(30, self.background_color)
 
-        enemy_mov_period = 2
-        self.enemies = [
-            Enemy(self.level_one.enemies_init[i], self.level_one.enemies_init_direct[i], 'h', enemy_mov_period,
-                  self.level_one.enemies_trajectory[i][0], self.level_one.enemies_trajectory[i][1])
-            for i in range(len(self.level_one.enemies_init))
-        ]
-
         self.restart()
 
         self.display = display
@@ -53,7 +46,7 @@ class AppSimulation:
         for i in range(n):
             
             ms_dt = self.clock.tick(60)    
-            s_dt = ms_dt / 800
+            s_dt = ms_dt / 1000
 
             self.move_enemies(s_dt)
             
@@ -103,6 +96,13 @@ class AppSimulation:
             player.set_init_pos(self.level_one.player_init)
             player.set_current_level(self.level_one)
             player.set_dead(False) 
+
+        enemy_mov_period = 2
+        self.enemies = [
+            Enemy(self.level_one.enemies_init[i], self.level_one.enemies_init_direct[i], 'h', enemy_mov_period,
+                  self.level_one.enemies_trajectory[i][0], self.level_one.enemies_trajectory[i][1])
+            for i in range(len(self.level_one.enemies_init))
+        ]
 
     def render_loop(self):
         self.level_one.draw_level_in_surface()
