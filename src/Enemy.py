@@ -28,8 +28,8 @@ class Enemy:
         self.position += self.velocity * dt * self.direction
 
     def is_at_end(self):
-        if self.position.x >= self.trajectory_end - 2 * self.radius or \
-            self.position.x <= self.trajectory_begin + 1:
+        if self.position.x >= self.trajectory_end - 3 * self.radius or \
+            self.position.x <= self.trajectory_begin + self.radius:
             return True
 
         return False
