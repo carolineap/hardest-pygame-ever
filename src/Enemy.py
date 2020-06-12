@@ -39,4 +39,4 @@ class Enemy:
 
     def draw_enemy(self, surface):
         ret = pygame.draw.circle(surface, self.color, (int(self.position.x + self.radius), int(self.position.y + self.radius)), self.radius)
-        print(ret)
+        #print(ret)

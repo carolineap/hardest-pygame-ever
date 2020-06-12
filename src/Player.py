@@ -5,7 +5,7 @@ from src.Controller import Controller
 
 
 class Player:
-    def __init__(self, initial_pos : pygame.Vector2, controller=Controller()):
+    def __init__(self, initial_pos: pygame.Vector2, controller=Controller()):
         self.position = initial_pos
 
         self.controller = controller
@@ -26,8 +26,8 @@ class Player:
     def set_current_level(self, level):
         self.current_level = level
 
-    def set_dead(self, bool):
-        self.dead = bool
+    def set_dead(self, boolean):
+        self.dead = boolean
 
     def move(self, mov_vector : pygame.Vector2, dt : float):
         # if mov_vector.length() != 0:

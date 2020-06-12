@@ -1,5 +1,6 @@
 import pygame
 import math
+import time
 
 from src.LevelOne import LevelOne
 from src.ControllerSimulation import ControllerSimulation as Controller
@@ -50,10 +51,12 @@ class AppSimulation:
 
             self.move_enemies(s_dt)
             
+            not_dead = False
+
             for j in range(len(self.players)):
 
                 if not self.players[j].dead:
-
+                    not_dead = True
                     self.input_loop(actions[j][i])
 
                     results[j][0] = self.exec_loop(s_dt, j) #win
@@ -61,7 +64,9 @@ class AppSimulation:
                     if results[j][1] > self.level_one.distance(self.players[j]):
                         results[j][1] = self.level_one.distance(self.players[j]) #get value and action for best position (closest to the goal)
                         results[j][2] = i
-           
+
+            if not not_dead:
+                break
             if self.display:
                 self.render_loop()  
 

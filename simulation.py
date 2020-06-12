@@ -4,7 +4,7 @@ import random
 
 def simulate_game():
 	population_size = 50
-	max_iterations = 200
+	max_iterations = 2000
 	best = None
 	state_size = 15 #aumenta o tamanho do cromossomo gradativamente, cinco estados a cada cinco gerações
 	i = 0
@@ -20,9 +20,9 @@ def simulate_game():
 
 		d = int(state_size/2) #max number of repetitions
 
-		print("Starting simulation of population " + str(j))
+		print("Starting simulation of generation " + str(j), state_size)
 	
-		results = app.run([individual.state[:state_size] for individual in population], min(state_size, 200))
+		results = app.run([individual.state[:state_size] for individual in population], (state_size))
 
 		for i in range(len(population)):
 			population[i].win = results[i][0]
@@ -47,7 +47,7 @@ def simulate_game():
 		j += 1
 
 		if j%5 == 0:
-			state_size += 10
+			state_size += 20
 			population = ga.increase_state(population, state_size, d)
 
 	print(state_size)
