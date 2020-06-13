@@ -42,10 +42,13 @@ def simulate_game():
 
 		new_population = []
 		
-		for i in range(int(len(population)/2)):
-			ind1, ind2 = ga.selection(population)
-			new_population.append(ga.Individual(ga.mutation(ind1.state, ind1.action_best_position-2, d))) #tenta fazer mutação bem perto da melhor posição
-			new_population.append(ga.Individual(ga.mutation(ind2.state, ind2.action_best_position-2, d)))
+		parents_selection = ga.selection(population)
+		for i in range(int(len(parents_selection)/2)):
+			new_ind_1_crom, new_ind_2_crom = ga.crossover(parents_selection[i].state, parents_selection[i+1].state, state_size - 10)
+			new_population.append(ga.Individual(new_ind_1_crom))
+			new_population.append(ga.Individual(new_ind_2_crom))
+			#new_population.append(ga.Individual(ga.mutation(ind1.state, ind1.action_best_position-2, d))) #tenta fazer mutação bem perto da melhor posição
+			#new_population.append(ga.Individual(ga.mutation(ind2.state, ind2.action_best_position-2, d)))
 		
 		population =  new_population
 		

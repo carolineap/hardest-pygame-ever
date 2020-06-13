@@ -1,5 +1,6 @@
 import random
 from src.Actions import Actions
+from .ga_lib import weighted_shuffle
 
 class Individual:
     
@@ -22,9 +23,9 @@ def selection(population):
     total = sum(all_fitness)
     p = [(1-(fitness/total)) for fitness in all_fitness]
     
-    new = random.choices(population, p, k=2)
+    new = weighted_shuffle(population, p)
 
-    return new[0], new[1]
+    return new
 
 def increase_state(population, n_state, d):
     for individual in population:
