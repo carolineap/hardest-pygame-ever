@@ -30,14 +30,14 @@ def increase_state(population, n_state, d):
     for individual in population:
         state = individual.state
         while len(state) < n_state:
-            state.extend([random.choice(list(Actions))]*random.randint(1, d))
+            state.extend([random.choice(list(Actions)).value]*random.randint(1, d))
         individual.state = state[:n_state]
 
     return population
     
 def mutation(state, point, d):
     d = random.randint(1, d) 
-    state[point:point+d] = [random.choice(list(Actions))]*d
+    state[point:point+d] = [random.choice(list(Actions)).value]*d
     return state
 
 def create_initial_population(size, n_state, d):
@@ -45,7 +45,7 @@ def create_initial_population(size, n_state, d):
     for i in range(size):
         state = []
         while len(state) < n_state:
-            state.extend([random.choice(list(Actions))]*random.randint(1, d)) #repeat an action at most d times
+            state.extend([random.choice(list(Actions)).value]*random.randint(1, d)) #repeat an action at most d times
             # state.extend([[i] * 5 for i in list(Actions)] * random.randint(1, d))  # repeat an action at most d times
         population.append(Individual(state[:n_state]))
     return population

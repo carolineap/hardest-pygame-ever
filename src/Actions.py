@@ -1,11 +1,11 @@
 from enum import Enum
 
 class Actions(Enum):
-	UP = 1
-	DOWN = 2
-	RIGHT = 3
-	LEFT = 4
-	UP_RIGHT = 5
-	UP_LEFT = 6
-	DOWN_RIGHT = 7
-	DOWN_LEFT = 8
+	UP = (0, 1)
+	DOWN = (0, -1)
+	RIGHT = (1, 0)
+	LEFT = (-1, 0)
+	UP_RIGHT = (1, 1)
+	UP_LEFT = (-1, 1)
+	DOWN_RIGHT = (1, -1)
+	DOWN_LEFT = (-1, -1)
