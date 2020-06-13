@@ -1,5 +1,5 @@
 from src.AppSimulation import AppSimulation as App
-import genetic_algorithm.ga as ga
+import genetic_algorithm.ga_exchange_entire_population as ga
 import random
 
 def simulate_game():
