@@ -3,9 +3,10 @@ import genetic_algorithm.ga as ga
 import random
 
 def simulate_game():
-	population_size = 50
+	population_size = 100
 	max_iterations = 2000
 	best = None
+	worst = None
 	state_size = 15 #aumenta o tamanho do cromossomo gradativamente, cinco estados a cada cinco gerações
 	i = 0
 	j = 0
@@ -28,12 +29,16 @@ def simulate_game():
 			population[i].win = results[i][0]
 			population[i].best_position = results[i][1]
 			population[i].action_best_position = results[i][2]
+			population[i].poison = results[i][3]
 
 			if population[i].win:
 				print("Alguém venceu!!!")
 
-			if not best or best.fitness() > population[i].fitness():
+			if not best or population[i].fitness() < best.fitness():
 				best = population[i]
+
+			if not worst or population[i].fitness() > worst.fitness():
+				worst = population[i]
 
 		new_population = []
 		

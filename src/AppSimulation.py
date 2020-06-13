@@ -37,12 +37,14 @@ class AppSimulation:
             pygame.mixer.music.play(-1)
             pygame.mixer.music.set_volume(0.5)
 
+            self.mean_graph_surface = pygame.Surface((300, 300))
+
     def run(self, actions, n):        
         self.restart()
         
         results = []
         for i in range(len(self.players)):
-            results.append([False, 1000, -1])
+            results.append([False, 1000, -1, 0])
 
         for i in range(n):
             
@@ -60,6 +62,7 @@ class AppSimulation:
                     self.input_loop(actions[j][i])
 
                     results[j][0] = self.exec_loop(s_dt, j) #win
+                    results[j][3] = self.level_one.poison_player(self.players[j])
 
                     if results[j][1] > self.level_one.distance(self.players[j]):
                         results[j][1] = self.level_one.distance(self.players[j]) #get value and action for best position (closest to the goal)
@@ -119,9 +122,12 @@ class AppSimulation:
         for enemy in self.enemies:
             enemy.draw_enemy(self.level_one.surface)
 
-        self.main_screen.update_screen(self.level_one)
+        self.main_screen.update_screen(self.level_one, self.mean_graph_surface)
         
         pygame.display.update()
 
+    def update_mean_graph(self, fig_mean_file):
+        mean_graph = pygame.image.load(fig_mean_file)
+        self.mean_graph_surface.blit(mean_graph, (0, 0))
 
 

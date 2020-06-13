@@ -7,11 +7,12 @@ class Individual:
         self.state = state
         self.best_position = 1000
         self.action_best_position = -1
+        self.poison = 0
         self.win = False
         
     def fitness(self): 
-        return (1*self.best_position)+self.action_best_position #menor dist para o goal com o menor numero de acoes
-
+        return self.poison + (1*self.best_position) + self.action_best_position #menor dist para o goal com o menor numero de acoes
+#
 def crossover(s1, s2, point): 
     return s1[:point] + s2[point:], s2[:point] + s1[point:]
 
@@ -45,5 +46,6 @@ def create_initial_population(size, n_state, d):
         state = []
         while len(state) < n_state:
             state.extend([random.choice(list(Actions))]*random.randint(1, d)) #repeat an action at most d times
+            # state.extend([[i] * 5 for i in list(Actions)] * random.randint(1, d))  # repeat an action at most d times
         population.append(Individual(state[:n_state]))
     return population

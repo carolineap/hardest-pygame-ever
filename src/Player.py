@@ -20,6 +20,8 @@ class Player:
 
         self.dead = False
 
+        self.poison = 0
+
     def set_init_pos(self, init_pos_vec : pygame.Vector2):
         self.position = init_pos_vec
 
