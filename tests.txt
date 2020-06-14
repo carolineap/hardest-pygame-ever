@@ -1,0 +1,5 @@
+type;population_size;max_iterations;winners;final_state_size;n;max_state_size
+roullete;300;500;189;345;5;500
+steady;300;500;176;355;5;500
+steady;500;500;328;325;5;500
+roulette;500;500;284;325;5;500

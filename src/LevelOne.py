@@ -147,15 +147,15 @@ class LevelOne():
 
     def poison_player(self, player):
         if self.init_area.contains(player.get_rect()):
-            player.poison = min(player.poison + 0.1, 600)
+            player.poison = player.poison + 1
         else:
-            player.poison = max(player.poison - 0.5, 0)
+            player.poison = max(player.poison - 1, 0)
 
         return player.poison
 
     def distance(self, player):
         if self.init_area.contains(player.get_rect()):
-            return 4 * player.position.distance_to(self.init_bridge) + self.init_bridge.distance_to(self.end_bridge)
+            return  player.position.distance_to(self.init_bridge) + self.init_bridge.distance_to(self.end_bridge)
         
         if self.end_area.contains(player.get_rect()):
             return 0
