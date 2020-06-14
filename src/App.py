@@ -28,7 +28,7 @@ class App:
         self.player.set_init_pos(self.level_one.player_init)
         self.player.set_current_level(self.level_one)
 
-        enemy_mov_period = 2
+        enemy_mov_period = 1.5
         self.enemies = [
             Enemy(self.level_one.enemies_init[i], self.level_one.enemies_init_direct[i], 'h', enemy_mov_period,
                   self.level_one.enemies_trajectory[i][0], self.level_one.enemies_trajectory[i][1])

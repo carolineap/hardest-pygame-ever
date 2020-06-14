@@ -3,11 +3,11 @@ import genetic_algorithm.ga_exchange_entire_population as ga
 import random
 
 def simulate_game():
-	population_size = 100
+	population_size = 150
 	max_iterations = 2000
-	best = None
-	worst = None
-	state_size = 15 #aumenta o tamanho do cromossomo gradativamente, cinco estados a cada cinco gerações
+
+	state_size = 30 #aumenta o tamanho do cromossomo gradativamente, cinco estados a cada cinco gerações
+	crossover_pos = 1
 	i = 0
 	j = 0
 
@@ -22,7 +22,8 @@ def simulate_game():
 		d = int(state_size/2) #max number of repetitions
 
 		print("Starting simulation of generation " + str(j), state_size)
-	
+		best = None
+		worst = None
 		results = app.run([individual.state[:state_size] for individual in population], (state_size))
 
 		for i in range(len(population)):
@@ -43,8 +44,10 @@ def simulate_game():
 		new_population = []
 		
 		parents_selection = ga.selection(population)
+		change_point = 0
 		for i in range(int(len(parents_selection)/2)):
-			new_ind_1_crom, new_ind_2_crom = ga.crossover(parents_selection[i].state, parents_selection[i+1].state, state_size - 10)
+			change_point += int(crossover_pos)
+			new_ind_1_crom, new_ind_2_crom = ga.crossover(parents_selection[2*i].state, parents_selection[(2*i)+1].state, state_size - change_point)
 			new_population.append(ga.Individual(new_ind_1_crom))
 			new_population.append(ga.Individual(new_ind_2_crom))
 			#new_population.append(ga.Individual(ga.mutation(ind1.state, ind1.action_best_position-2, d))) #tenta fazer mutação bem perto da melhor posição
@@ -54,8 +57,10 @@ def simulate_game():
 		
 		j += 1
 
-		if j%5 == 0:
+		if j%5 == 0 and state_size <= 900:
+			crossover_pos += 0.05
 			state_size += 20
+			print(crossover_pos)
 			population = ga.increase_state(population, state_size, d)
 
 	print(state_size)

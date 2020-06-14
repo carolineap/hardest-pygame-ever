@@ -56,13 +56,12 @@ class AppSimulation:
             not_dead = False
 
             for j in range(len(self.players)):
-
                 if not self.players[j].dead:
                     not_dead = True
                     self.input_loop(actions[j][i])
 
                     results[j][0] = self.exec_loop(s_dt, j) #win
-                    results[j][3] = self.level_one.poison_player(self.players[j])
+                    results[j][3] = max(results[j][3] + self.level_one.poison_player(self.players[j]), 0)
 
                     if results[j][1] > self.level_one.distance(self.players[j]):
                         results[j][1] = self.level_one.distance(self.players[j]) #get value and action for best position (closest to the goal)
@@ -72,6 +71,7 @@ class AppSimulation:
                 break
             if self.display:
                 self.render_loop()  
+
 
         return results
 
@@ -105,7 +105,7 @@ class AppSimulation:
             player.set_current_level(self.level_one)
             player.set_dead(False) 
 
-        enemy_mov_period = 2
+        enemy_mov_period = 1.5
         self.enemies = [
             Enemy(self.level_one.enemies_init[i], self.level_one.enemies_init_direct[i], 'h', enemy_mov_period,
                   self.level_one.enemies_trajectory[i][0], self.level_one.enemies_trajectory[i][1])

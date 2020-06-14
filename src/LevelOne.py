@@ -147,11 +147,11 @@ class LevelOne():
 
     def poison_player(self, player):
         if self.init_area.contains(player.get_rect()):
-            player.poison = min(player.poison + 0.1, 600)
+            poison = 0.1
         else:
-            player.poison = max(player.poison - 0.5, 0)
+            poison = -100
 
-        return player.poison
+        return poison
 
     def distance(self, player):
         if self.init_area.contains(player.get_rect()):
