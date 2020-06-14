@@ -20,16 +20,20 @@ class Enemy:
 
         self.color = (0, 0, 255)
         self.current_level = None
+        self.moves_after_inversion = 0
 
     def move(self, dt: float):
         if self.is_at_end():
             self.direction *= -1
+            self.moves_after_inversion = 0
 
         self.position += self.velocity * dt * self.direction
+        self.moves_after_inversion += 1
 
     def is_at_end(self):
-        if self.position.x >= self.trajectory_end - 3 * self.radius or \
-            self.position.x <= self.trajectory_begin + self.radius:
+        if ((self.position.x >= self.trajectory_end - 3 * self.radius or
+            self.position.x <= self.trajectory_begin + self.radius) and
+             self.moves_after_inversion > 5):
             return True
 
         return False
@@ -39,4 +43,3 @@ class Enemy:
 
     def draw_enemy(self, surface):
         ret = pygame.draw.circle(surface, self.color, (int(self.position.x + self.radius), int(self.position.y + self.radius)), self.radius)
-        #print(ret)

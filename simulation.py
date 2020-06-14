@@ -5,7 +5,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 from datetime import datetime
 
-
 def create_mean_graphic(time, pop_min, pop_max, pop_mean, ax_mean, fig_mean, fig_mean_file, index):
 	pop_error = [pop_max, pop_min]
 	error_interval = (index // 50) + 1
@@ -23,10 +22,9 @@ def create_best_graphic(time, pop_best, ax_best, fig_best, fig_best_file, index)
 	fig_best.savefig(str(time) + fig_best_file, dpi=100)
 	plt.close(fig_best)
 
-
-def simulate_game():
-	population_size = 100
-	max_iterations = 2000
+def simulate_game(sim_type="steady"):
+	population_size = 500
+	max_iterations = 500
 	state_size = 15 #aumenta o tamanho do cromossomo gradativamente, cinco estados a cada cinco gerações
 	i = 0
 	j = 0
@@ -50,9 +48,11 @@ def simulate_game():
 	fig_mean_file = 'pop_mean.png'
 	fig_best_file = 'pop_max.png'
 
-	while(j < max_iterations):
+	while(j < max_iterations and winners < min_winners):
+
 		fig_mean, ax_mean = plt.subplots(figsize=(3, 3))
 		fig_best, ax_best = plt.subplots(figsize=(3, 3))
+
 		best = None
 		worst = None
 

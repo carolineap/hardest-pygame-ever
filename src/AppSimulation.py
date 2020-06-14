@@ -1,6 +1,7 @@
 import pygame
 import math
 import time
+import numpy
 
 from src.LevelOne import LevelOne
 from src.ControllerSimulation import ControllerSimulation as Controller
@@ -17,6 +18,12 @@ class AppSimulation:
         self.players = []
         for i in range(population_size):
             self.players.append((Player(pygame.Vector2(0, 0))))
+
+        if population_size > 50:
+            rng = numpy.random.default_rng(42)
+            self.drawable_players = rng.choice(self.players, 50, replace=False)
+        else:
+            self.drawable_players = self.players
 
         self.clock = pygame.time.Clock()
         self.running = False
@@ -116,7 +123,7 @@ class AppSimulation:
     def render_loop(self):
         self.level_one.draw_level_in_surface()
 
-        for player in self.players:
+        for player in self.drawable_players:
             if not player.dead:
                 player.draw_player(self.level_one.surface)
             
