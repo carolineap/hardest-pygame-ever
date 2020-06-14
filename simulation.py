@@ -118,14 +118,14 @@ def simulate_game(population_size, sim_type="steady", display=False):
 
 	f = open("tests.csv", "a")
 	if not filesize:
-		f.write("type;population_size;max_iterations;iterations;winners;final_state_size;n;max_state_size;best_number_actions\n")
-	f.write(sim_type+";"+str(population_size)+";"+str(max_iterations)+";"+str(j)+";"+str(winners)+";"+str(state_size)+";"+str(n)+";"+str(max_state_size)+";"+str(best_win.action_best_position)+"\n")
+		f.write("type,population_size,max_iterations,iterations,winners,final_state_size,n,max_state_size,best_number_actions\n")
+	f.write(sim_type+","+str(population_size)+","+str(max_iterations)+","+str(j)+","+str(winners)+","+str(state_size)+","+str(n)+","+str(max_state_size)+","+str(best_win.action_best_position)+"\n")
 	f.close()
 
 	return best
 
 if __name__ == "__main__":
-	population_size = [200, 500]
+	population_size = [200, 200, 500, 500]
 	sim_type = ["steady", "roulette"]
 	bests = []
 	for p in population_size:
