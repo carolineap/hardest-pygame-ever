@@ -22,8 +22,8 @@ def create_best_graphic(time, pop_best, ax_best, fig_best, fig_best_file, index)
 	fig_best.savefig(str(time) + fig_best_file, dpi=100)
 	plt.close(fig_best)
 
-def simulate_game(sim_type="steady"):
-	population_size = 500
+def simulate_game(population_size, sim_type="steady", display=False):
+
 	max_iterations = 500
 	state_size = 15 #aumenta o tamanho do cromossomo gradativamente, cinco estados a cada cinco gerações
 	i = 0
@@ -53,8 +53,10 @@ def simulate_game(sim_type="steady"):
 		fig_mean, ax_mean = plt.subplots(figsize=(3, 3))
 		fig_best, ax_best = plt.subplots(figsize=(3, 3))
 
+	
 		best = None
 		worst = None
+		best_win = None
 
 		d = int(state_size/2) #max number of repetitions
 
@@ -71,7 +73,10 @@ def simulate_game(sim_type="steady"):
 			if population[i].win:
 				print("Alguém venceu!!!")
 
-			if not best or population[i].fitness() < best.fitness():
+				if not best_win or population[i].fitness() > best_win.fitness():
+					best_win = population[i]
+
+			if not best or population[i].fitness() > best.fitness():
 				best = population[i]
 
 			if not worst or population[i].fitness() > worst.fitness():
@@ -106,11 +111,33 @@ def simulate_game(sim_type="steady"):
 			state_size += 20
 			population = ga.increase_state(population, state_size, d)
 
-	print(state_size)
+	try:
+		filesize = os.path.getsize("tests.csv")
+	except:
+		filesize = None
+
+	f = open("tests.csv", "a")
+	if not filesize:
+		f.write("type;population_size;max_iterations;iterations;winners;final_state_size;n;max_state_size;best_number_actions\n")
+	f.write(sim_type+";"+str(population_size)+";"+str(max_iterations)+";"+str(j)+";"+str(winners)+";"+str(state_size)+";"+str(n)+";"+str(max_state_size)+";"+str(best_win.action_best_position)+"\n")
+	f.close()
+
+	return best
 
 if __name__ == "__main__":
-	simulate_game()
+	population_size = [200, 500]
+	sim_type = ["steady", "roulette"]
+	bests = []
+	for p in population_size:
+		for t in sim_type:
+			bests.append(simulate_game(p, sim_type=t, display=False))
 
+# app = App(1, display=True)
+
+	# while len(bests):
+	# 	best = bests.pop()
+	# 	input("Press Enter to continue...")
+	# 	app.run([best.state], (len(best.state)))
 
 
 	
