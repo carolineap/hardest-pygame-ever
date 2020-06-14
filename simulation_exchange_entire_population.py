@@ -10,7 +10,7 @@ def simulate_game():
 	crossover_pos = 1
 	i = 0
 	j = 0
-
+	mutation_rate = 0.3
 	d = int(state_size/2)
 
 	population = ga.create_initial_population(population_size, state_size, d)
@@ -24,6 +24,8 @@ def simulate_game():
 		print("Starting simulation of generation " + str(j), state_size)
 		best = None
 		worst = None
+		results = app.run([individual.state[:state_size] for individual in population], (state_size))
+
 		results = app.run([individual.state[:state_size] for individual in population], (state_size))
 
 		for i in range(len(population)):
@@ -42,19 +44,22 @@ def simulate_game():
 				worst = population[i]
 
 		new_population = []
-		
+
 		parents_selection = ga.selection(population)
 		change_point = 0
 		for i in range(int(len(parents_selection)/2)):
 			change_point += int(crossover_pos)
 			new_ind_1_crom, new_ind_2_crom = ga.crossover(parents_selection[2*i].state, parents_selection[(2*i)+1].state, state_size - change_point)
+
+			if random.random() <= mutation_rate:
+				new_ind_1_crom = ga.mutation(new_ind_1_crom)
+				new_ind_2_crom = ga.mutation(new_ind_2_crom)
+
 			new_population.append(ga.Individual(new_ind_1_crom))
 			new_population.append(ga.Individual(new_ind_2_crom))
-			#new_population.append(ga.Individual(ga.mutation(ind1.state, ind1.action_best_position-2, d))) #tenta fazer mutação bem perto da melhor posição
-			#new_population.append(ga.Individual(ga.mutation(ind2.state, ind2.action_best_position-2, d)))
-		
+
 		population =  new_population
-		
+	
 		j += 1
 
 		if j%5 == 0 and state_size <= 900:
@@ -67,7 +72,3 @@ def simulate_game():
 
 if __name__ == "__main__":
 	simulate_game()
-
-
-
-	
