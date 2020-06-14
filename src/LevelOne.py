@@ -155,7 +155,7 @@ class LevelOne():
 
     def distance(self, player):
         if self.init_area.contains(player.get_rect()):
-            return  player.position.distance_to(self.init_bridge) + self.init_bridge.distance_to(self.end_bridge)
+            return player.position.distance_to(self.init_bridge) + self.init_bridge.distance_to(self.end_bridge)
         
         if self.end_area.contains(player.get_rect()):
             return 0

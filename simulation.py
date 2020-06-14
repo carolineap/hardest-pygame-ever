@@ -6,8 +6,6 @@ import os
 def simulate_game(sim_type="steady"):
 	population_size = 500
 	max_iterations = 500
-	best = None
-	worst = None
 	state_size = 15 #aumenta o tamanho do cromossomo gradativamente, cinco estados a cada cinco gerações
 	i = 0
 	j = 0
@@ -28,6 +26,8 @@ def simulate_game(sim_type="steady"):
 	app = App(len(population), display=False)
 
 	while(j < max_iterations and winners < min_winners):
+		best = None
+		worst = None
 
 		d = random.randint(5, int(state_size/2)) #max number of repetitions
 
