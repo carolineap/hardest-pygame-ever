@@ -3,8 +3,8 @@ import genetic_algorithm.ga as ga
 import random
 import os
 
-def simulate_game(sim_type="steady"):
-	population_size = 500
+def simulate_game(population_size, sim_type="steady", display=False):
+
 	max_iterations = 500
 	state_size = 15 #aumenta o tamanho do cromossomo gradativamente, cinco estados a cada cinco gerações
 	i = 0
@@ -23,13 +23,15 @@ def simulate_game(sim_type="steady"):
 
 	population = ga.create_initial_population(population_size, state_size, d)
 
-	app = App(len(population), display=False)
+	app = App(len(population), display=display)
 
 	while(j < max_iterations and winners < min_winners):
+		
 		best = None
 		worst = None
+		best_win = None
 
-		d = random.randint(5, int(state_size/2)) #max number of repetitions
+		d = int((state_size/2)) #max number of repetitions
 
 		print("Starting simulation of generation " + str(j), state_size)
 	
@@ -44,6 +46,10 @@ def simulate_game(sim_type="steady"):
 			if population[i].win:
 				print("Alguém venceu!!!")
 				winners += 1
+
+			if population[i].win:
+				if not best_win or population[i].fitness() > best_win.fitness():
+					best_win = population[i]
 
 			if not best or population[i].fitness() > best.fitness():
 				best = population[i]
@@ -89,17 +95,33 @@ def simulate_game(sim_type="steady"):
 			population = ga.increase_state(population, state_size, d)
 			increase_state = 0
 
-	filesize = os.path.getsize("tests.txt")
+	try:
+		filesize = os.path.getsize("tests.csv")
+	except:
+		filesize = None
 
-	f = open("tests.txt", "a")
+	f = open("tests.csv", "a")
 	if not filesize:
-		f.write("type;population_size;max_iterations;winners;final_state_size;n;max_state_size\n")
-	f.write(sim_type+";"+str(population_size)+";"+str(max_iterations)+";"+str(winners)+";"+str(state_size)+";"+str(n)+";"+str(max_state_size)+"\n")
+		f.write("type;population_size;max_iterations;iterations;winners;final_state_size;n;max_state_size;best_number_actions\n")
+	f.write(sim_type+";"+str(population_size)+";"+str(max_iterations)+";"+str(j)+";"+str(winners)+";"+str(state_size)+";"+str(n)+";"+str(max_state_size)+";"+str(best_win.action_best_position)+"\n")
 	f.close()
 
-if __name__ == "__main__":
-	simulate_game(sim_type="roulette")
+	return best
 
+if __name__ == "__main__":
+	population_size = [200, 500]
+	sim_type = ["steady", "roulette"]
+	bests = []
+	for p in population_size:
+		for t in sim_type:
+			bests.append(simulate_game(p, sim_type=t, display=False))
+
+	# app = App(1, display=True)
+
+	# while len(bests):
+	# 	best = bests.pop()
+	# 	input("Press Enter to continue...")
+	# 	app.run([best.state], (len(best.state)))
 
 
 	
