@@ -69,7 +69,7 @@ def simulate_game(population_size, sim_type="steady", display=False):
 					new_state = ga.mutation(ind.state, ind.action_best_position-random.randint(0, 5), d)
 				new_population.append(ga.Individual(new_state))
 			
-			for i in range(int(len(crossover_pop)/2)):
+			for i in range(int(len(crossover_pop)/2), 2):
 				point = min(crossover_pop[i].action_best_position, crossover_pop[i+1].action_best_position)
 				ind1, ind2 = ga.crossover(crossover_pop[i].state, crossover_pop[i+1].state, point)
 				new_population.append(ga.Individual(ind1)) 
@@ -109,12 +109,12 @@ def simulate_game(population_size, sim_type="steady", display=False):
 	return best
 
 if __name__ == "__main__":
-	population_size = [200, 200, 500, 500]
+	population_size = [200]
 	sim_type = ["steady", "roulette"]
 	bests = []
 	for p in population_size:
 		for t in sim_type:
-			bests.append(simulate_game(p, sim_type=t, display=False))
+			bests.append(simulate_game(p, sim_type=t, display=True))
 
 	# app = App(1, display=True)
 

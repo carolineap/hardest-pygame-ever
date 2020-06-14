@@ -28,7 +28,7 @@ def selection(population, crossover_rate=0.3):
     p = [(1-(fitness/total)) for fitness in all_fitness]
 
     clone = random.choices(population, p, k=k_clone)
-    crossover = random.choices(population, p, k=k_crossover)
+    crossover = random.choices(population, p, k=k_crossover).shuffle()
 
     return clone, crossover
 
