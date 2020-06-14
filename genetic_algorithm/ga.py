@@ -22,9 +22,25 @@ def selection(population):
     total = sum(all_fitness)
     p = [(1-(fitness/total)) for fitness in all_fitness]
     
-    new = random.choices(population, p, k=2)
+    clone = random.choices(population, p, k=k_clone)
+    crossover = random.choices(population, p, k=k_crossover).shuffle()
 
-    return new[0], new[1]
+    return clone, crossover
+
+def roulette_selection(population):
+    all_fitness = [ individual.fitness_roullete() for individual in population]
+    total = (sum(all_fitness))
+    new = []
+
+    for i in range(len(population)):
+        r = random.uniform(0, total)
+        cum_sum = 0
+        for individual in population:
+            cum_sum += individual.fitness_roullete()
+            if cum_sum >= r:
+                new.append(individual)
+                break
+    return new
 
 def increase_state(population, n_state, d):
     for individual in population:

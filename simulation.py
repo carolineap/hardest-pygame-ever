@@ -96,14 +96,34 @@ def simulate_game(population_size, sim_type="steady", display=False):
 		create_best_graphic(dt_string, pop_best, ax_best, fig_best, fig_best_file, j)
 		app.update_max_graph(str(dt_string) + fig_best_file)
 
-		new_population = []
-		
-		for i in range(int(len(population)/2)):
-			ind1, ind2 = ga.selection(population)
-			new_population.append(ga.Individual(ga.mutation(ind1.state, ind1.action_best_position-2, d))) #tenta fazer mutação bem perto da melhor posição
-			new_population.append(ga.Individual(ga.mutation(ind2.state, ind2.action_best_position-2, d)))
-		
-		population =  new_population
+		new_population = []		
+
+		if type == "steady":
+			clone_pop, crossover_pop = ga.selection(population)
+
+			for ind in clone_pop:
+				if ind.fitness() == best.fitness():
+					new_state = ga.mutation(ind.state, ind.action_best_position, d)
+				else:
+					new_state = ga.mutation(ind.state, ind.action_best_position-random.randint(0, 5), d)
+				new_population.append(ga.Individual(new_state))
+			
+			for i in range(int(len(crossover_pop)/2), 2):
+				point = min(crossover_pop[i].action_best_position, crossover_pop[i+1].action_best_position)
+				ind1, ind2 = ga.crossover(crossover_pop[i].state, crossover_pop[i+1].state, point)
+				new_population.append(ga.Individual(ind1)) 
+				new_population.append(ga.Individual(ind2))
+		else:
+			selected = ga.roulette_selection(population)
+
+			for ind in selected:
+				if ind.fitness() == best.fitness():
+					new_state = ga.mutation(ind.state, ind.action_best_position, d)
+				else:
+					new_state = ga.mutation(ind.state, ind.action_best_position-random.randint(0, 5), d)
+				new_population.append(ga.Individual(new_state))
+
+		population = new_population.copy()
 		
 		j += 1
 
@@ -125,12 +145,12 @@ def simulate_game(population_size, sim_type="steady", display=False):
 	return best
 
 if __name__ == "__main__":
-	population_size = [200, 200, 500, 500]
+	population_size = [200]
 	sim_type = ["steady", "roulette"]
 	bests = []
 	for p in population_size:
 		for t in sim_type:
-			bests.append(simulate_game(p, sim_type=t, display=False))
+			bests.append(simulate_game(p, sim_type=t, display=True))
 
 # app = App(1, display=True)
 
