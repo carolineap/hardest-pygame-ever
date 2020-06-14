@@ -3,14 +3,13 @@ import genetic_algorithm.ga_exchange_entire_population as ga
 import random
 
 def simulate_game():
-    population_size = 100
-    max_iterations = 2000
-    best = None
-    worst = None
-    state_size = 15 #aumenta o tamanho do cromossomo gradativamente, cinco estados a cada cinco gerações
-    i = 0
-    j = 0
-    mutation_rate = 0.03
+	population_size = 150
+	max_iterations = 2000
+
+	state_size = 30 #aumenta o tamanho do cromossomo gradativamente, cinco estados a cada cinco gerações
+	crossover_pos = 1
+	i = 0
+	j = 0
 
     d = int(state_size/2)
 
@@ -22,9 +21,10 @@ def simulate_game():
 
         d = int(state_size/2) #max number of repetitions
 
-        print("Starting simulation of generation " + str(j), state_size)
-
-        results = app.run([individual.state[:state_size] for individual in population], (state_size))
+		print("Starting simulation of generation " + str(j), state_size)
+		best = None
+		worst = None
+		results = app.run([individual.state[:state_size] for individual in population], (state_size))
 
         for i in range(len(population)):
             population[i].win = results[i][0]
