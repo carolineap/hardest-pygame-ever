@@ -4,6 +4,7 @@ import random
 import numpy as np
 import matplotlib.pyplot as plt
 from datetime import datetime
+import os
 
 def create_mean_graphic(time, pop_min, pop_max, pop_mean, ax_mean, fig_mean, fig_mean_file, index):
 	pop_error = [pop_max, pop_min]
@@ -14,7 +15,6 @@ def create_mean_graphic(time, pop_min, pop_max, pop_mean, ax_mean, fig_mean, fig
 	fig_mean.savefig(str(time) + fig_mean_file, dpi=100)
 	plt.close(fig_mean)
 
-
 def create_best_graphic(time, pop_best, ax_best, fig_best, fig_best_file, index):
 	ax_best.plot(np.arange(index + 1), pop_best)
 
@@ -22,10 +22,8 @@ def create_best_graphic(time, pop_best, ax_best, fig_best, fig_best_file, index)
 	fig_best.savefig(str(time) + fig_best_file, dpi=100)
 	plt.close(fig_best)
 
-import os
-
 def simulate_game(population_size, sim_type="steady", display=False):
-	max_iterations = 500
+	max_iterations = 10
 	state_size = 15 #aumenta o tamanho do cromossomo gradativamente, cinco estados a cada cinco gerações
 	i = 0
 	j = 0
@@ -36,7 +34,7 @@ def simulate_game(population_size, sim_type="steady", display=False):
 	
 	now = datetime.now()
 	# dd/mm/YY-H:M:S
-	dt_string = now.strftime("%d/%m/%Y-%H:%M:%S")
+	dt_string = now.strftime("Figures/" + sim_type + "-" + str(population_size) +"%d-%m-%Y-%H:%M:%S")
 	n = 5
 
 	max_state_size = 500
@@ -66,12 +64,6 @@ def simulate_game(population_size, sim_type="steady", display=False):
 
 		fig_mean, ax_mean = plt.subplots(figsize=(3, 3))
 		fig_best, ax_best = plt.subplots(figsize=(3, 3))
-
-	
-		best = None
-		worst = None
-
-	while(j < max_iterations and winners < min_winners):
 		
 		best = None
 		worst = None
@@ -155,22 +147,19 @@ def simulate_game(population_size, sim_type="steady", display=False):
 			increase_state = 0
 
 	try:
-		filesize = os.path.getsize("tests.csv")
+		filesize = os.path.getsize("simulation-one.csv")
 	except:
 		filesize = None
 
-	f = open("tests.csv", "a")
+	if not best_win:
+		best_solution = 0
+	else:
+		best_solution = best_win.action_best_position
+
+	f = open("simulation-one.csv", "a")
 	if not filesize:
 		f.write("type,population_size,max_iterations,iterations,winners,final_state_size,n,max_state_size,best_number_actions\n")
-	f.write(sim_type+","+str(population_size)+","+str(max_iterations)+","+str(j)+","+str(winners)+","+str(state_size)+","+str(n)+","+str(max_state_size)+","+str(best_win.action_best_position)+"\n")
-	f.close()
-
-	return best_win
-
-	f = open("tests.csv", "a")
-	if not filesize:
-		f.write("type,population_size,max_iterations,iterations,winners,final_state_size,n,max_state_size,best_number_actions\n")
-	f.write(sim_type+","+str(population_size)+","+str(max_iterations)+","+str(j)+","+str(winners)+","+str(state_size)+","+str(n)+","+str(max_state_size)+","+str(best_win.action_best_position)+"\n")
+	f.write(sim_type+","+str(population_size)+","+str(max_iterations)+","+str(j)+","+str(winners)+","+str(state_size)+","+str(n)+","+str(max_state_size)+","+str(best_solution)+"\n")
 	f.close()
 
 	return best_win
