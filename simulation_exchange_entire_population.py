@@ -55,6 +55,7 @@ def simulate_game(population_size, display):
 
 			if population[i].win:
 				print("Alguém venceu!!!")
+				winners += 1
 
 			if population[i].win:
 				if not best_win or population[i].fitness() > best_win.fitness():
