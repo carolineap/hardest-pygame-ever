@@ -147,9 +147,9 @@ class LevelOne():
 
     def poison_player(self, player):
         if self.init_area.contains(player.get_rect()):
-            player.poison = min(player.poison + 0.1, 600)
+            player.poison = player.poison + 1
         else:
-            player.poison = max(player.poison - 0.5, 0)
+            player.poison = max(player.poison - 1, 0)
 
         return player.poison
 

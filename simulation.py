@@ -22,21 +22,32 @@ def create_best_graphic(time, pop_best, ax_best, fig_best, fig_best_file, index)
 	fig_best.savefig(str(time) + fig_best_file, dpi=100)
 	plt.close(fig_best)
 
+import os
+
 def simulate_game(population_size, sim_type="steady", display=False):
 	max_iterations = 500
 	state_size = 15 #aumenta o tamanho do cromossomo gradativamente, cinco estados a cada cinco gerações
 	i = 0
 	j = 0
+	increase_state = 0
+	winners = 0
+	min_winners = int(0.5*population_size)
 
-	d = int(state_size/2)
 	
 	now = datetime.now()
 	# dd/mm/YY-H:M:S
 	dt_string = now.strftime("%d/%m/%Y-%H:%M:%S")
+	n = 5
+
+	max_state_size = 500
+
+	state_increment = 10
+
+	d = int((state_size/2))
 
 	population = ga.create_initial_population(population_size, state_size, d)
 
-	app = App(len(population), display=True)
+	best_win = None
 
 	# Graphic lists
 	pop_max_error = []
@@ -60,7 +71,12 @@ def simulate_game(population_size, sim_type="steady", display=False):
 		best = None
 		worst = None
 
-		d = int(state_size/2) #max number of repetitions
+	while(j < max_iterations and winners < min_winners):
+		
+		best = None
+		worst = None
+
+		d = int((state_size/2)) #max number of repetitions
 
 		print("Starting simulation of generation " + str(j), state_size)
 	
@@ -74,14 +90,16 @@ def simulate_game(population_size, sim_type="steady", display=False):
 
 			if population[i].win:
 				print("Alguém venceu!!!")
+				winners += 1
 
+			if population[i].win:
 				if not best_win or population[i].fitness() > best_win.fitness():
 					best_win = population[i]
 
 			if not best or population[i].fitness() > best.fitness():
 				best = population[i]
 
-			if not worst or population[i].fitness() > worst.fitness():
+			if not worst or population[i].fitness() < worst.fitness():
 				worst = population[i]
 
 		population_mean = np.mean([p.fitness() for p in population])
@@ -129,14 +147,25 @@ def simulate_game(population_size, sim_type="steady", display=False):
 		
 		j += 1
 
-		if j%5 == 0:
-			state_size += 20
+		increase_state += 1
+
+		if (increase_state%n == 0 or best.action_best_position - 5 >= state_size) and (state_size+state_increment) <= max_state_size:
+			state_size += state_increment
 			population = ga.increase_state(population, state_size, d)
+			increase_state = 0
 
 	try:
 		filesize = os.path.getsize("tests.csv")
 	except:
 		filesize = None
+
+	f = open("tests.csv", "a")
+	if not filesize:
+		f.write("type,population_size,max_iterations,iterations,winners,final_state_size,n,max_state_size,best_number_actions\n")
+	f.write(sim_type+","+str(population_size)+","+str(max_iterations)+","+str(j)+","+str(winners)+","+str(state_size)+","+str(n)+","+str(max_state_size)+","+str(best_win.action_best_position)+"\n")
+	f.close()
+
+	return best_win
 
 	f = open("tests.csv", "a")
 	if not filesize:
@@ -153,3 +182,4 @@ if __name__ == "__main__":
 	for p in population_size:
 		for t in sim_type:
 			bests.append(simulate_game(p, sim_type=t, display=True))
+

@@ -11,17 +11,22 @@ class Individual:
         self.win = False
         
     def fitness(self): 
-        return self.poison + (1*self.best_position) + self.action_best_position #menor dist para o goal com o menor numero de acoes
-#
+        return self.poison + 2*self.best_position + self.action_best_position #menor dist para o goal com o menor numero de acoes
+
+    def fitness_roullete(self):
+        return 1/self.fitness()
+
 def crossover(s1, s2, point): 
     return s1[:point] + s2[point:], s2[:point] + s1[point:]
 
-def selection(population): 
-    all_fitness = [individual.fitness() for individual in population]
+def selection(population, crossover_rate=0.3): 
+    k_crossover = int(len(population)*crossover_rate)
+    k_clone = len(population) - k_crossover
     
-    total = sum(all_fitness)
+    all_fitness = [ individual.fitness() for individual in population]
+    total = int(sum(all_fitness))
     p = [(1-(fitness/total)) for fitness in all_fitness]
-    
+
     clone = random.choices(population, p, k=k_clone)
     crossover = random.choices(population, p, k=k_crossover).shuffle()
 
@@ -52,8 +57,13 @@ def increase_state(population, n_state, d):
     return population
     
 def mutation(state, point, d):
-    d = random.randint(1, d) 
-    state[point:point+d] = [random.choice(list(Actions)).value]*d
+    d = random.randint(1, min(d, len(state))) 
+
+    value = random.choice(list(Actions)).value
+    while value == state[point]:
+        value = random.choice(list(Actions)).value
+    state[point:point+d] = [value]*d
+
     return state
 
 def create_initial_population(size, n_state, d):

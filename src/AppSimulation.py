@@ -40,9 +40,9 @@ class AppSimulation:
 
         if display:
             self.main_screen = Screen(background_color=self.background_color)
-            pygame.mixer.music.load("SoundTrack/hardestGameThemeSong.mp3")
-            pygame.mixer.music.play(-1)
-            pygame.mixer.music.set_volume(0.5)
+            # pygame.mixer.music.load("SoundTrack/hardestGameThemeSong.mp3")
+            # pygame.mixer.music.play(-1)
+            # pygame.mixer.music.set_volume(0.5)
 
             self.mean_graph_surface = pygame.Surface((300, 300))
             self.best_graph_surface = pygame.Surface((300, 300))
@@ -113,7 +113,7 @@ class AppSimulation:
             player.set_current_level(self.level_one)
             player.set_dead(False) 
 
-        enemy_mov_period = 2
+        enemy_mov_period = 1.5
         self.enemies = [
             Enemy(self.level_one.enemies_init[i], self.level_one.enemies_init_direct[i], 'h', enemy_mov_period,
                   self.level_one.enemies_trajectory[i][0], self.level_one.enemies_trajectory[i][1])
