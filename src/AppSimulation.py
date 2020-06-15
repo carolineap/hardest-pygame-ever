@@ -1,6 +1,8 @@
+ 
 import pygame
 import math
 import time
+import numpy
 
 from src.LevelOne import LevelOne
 from src.ControllerSimulation import ControllerSimulation as Controller
@@ -10,22 +12,28 @@ from src.Enemy import Enemy
 from src.Score import Score
 
 class AppSimulation:
-    def __init__(self, population_size, display=True):
-        pygame.init()
-        self.controller = Controller()
+	def __init__(self, population_size, display=True):
+		pygame.init()
+		self.controller = Controller()
 
-        self.players = []
-        for i in range(population_size):
-            self.players.append((Player(pygame.Vector2(0, 0))))
+		self.players = []
+		for i in range(population_size):
+			self.players.append((Player(pygame.Vector2(0, 0))))
 
-        self.clock = pygame.time.Clock()
-        self.running = False
+		if population_size > 50:
+			rng = numpy.random.default_rng(42)
+			self.drawable_players = rng.choice(self.players, 50, replace=False)
+		else:
+			self.drawable_players = self.players
 
-        self.action = ""
-        self.value = 0
+		self.clock = pygame.time.Clock()
+		self.running = False
 
-        self.background_color = (200, 200, 200)
-        self.level_one = LevelOne(30, self.background_color)
+		self.action = ""
+		self.value = 0
+
+		self.background_color = (200, 200, 200)
+		self.level_one = LevelOne(30, self.background_color)
 
         self.restart()
 
