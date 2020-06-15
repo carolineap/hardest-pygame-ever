@@ -52,6 +52,7 @@ def simulate_game(population_size, display):
 
 			if population[i].win:
 				print("Alguém venceu!!!")
+				winners += 1
 
 			if population[i].win:
 				if not best_win or population[i].fitness() > best_win.fitness():
@@ -69,7 +70,6 @@ def simulate_game(population_size, display):
 		change_point = 0
 		for i in range(int(len(parents_selection)/2)):
 			change_point += int(crossover_pos)
-			#print(state_size - change_point)
 			new_ind_1_crom, new_ind_2_crom = ga.crossover(parents_selection[2*i].state, parents_selection[(2*i)+1].state, state_size - change_point)
 
 			if random.random() <= mutation_rate:
