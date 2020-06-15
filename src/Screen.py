@@ -11,7 +11,7 @@ class Screen:
         self.screen = pygame.display.set_mode((width, height))
         self.screen.fill(self.background_color)
 
-    def update_screen(self, level, mean_graph_surface):
+    def update_screen(self, level, mean_graph_surface, best_graph_surface):
         self.screen.fill(self.background_color)
 
         level_screen_x = math.ceil((self.width - level.width) / 2)
@@ -19,3 +19,4 @@ class Screen:
         self.screen.blit(level.surface, (level_screen_x, level_screen_y))
 
         self.screen.blit(mean_graph_surface, (50, 50))
+        self.screen.blit(best_graph_surface, (50, 400))

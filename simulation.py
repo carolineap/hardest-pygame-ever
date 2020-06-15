@@ -1,12 +1,31 @@
 from src.AppSimulation import AppSimulation as App
 import genetic_algorithm.ga as ga
 import random
+import numpy as np
+import matplotlib.pyplot as plt
+
+
+def create_mean_graphic(pop_min, pop_max, pop_mean, ax_mean, fig_mean, fig_mean_file, index):
+	pop_error = [pop_max, pop_min]
+	error_interval = (index // 50) + 1
+	ax_mean.errorbar(np.arange(index + 1), pop_mean, yerr=pop_error, errorevery=error_interval)
+
+	fig_mean.suptitle('Mean Fitness')
+	fig_mean.savefig(fig_mean_file, dpi=100)
+	plt.close(fig_mean)
+
+
+def create_best_graphic(pop_best, ax_best, fig_best, fig_best_file, index):
+	ax_best.plot(np.arange(index + 1), pop_best)
+
+	fig_best.suptitle('Best Fitness')
+	fig_best.savefig(fig_best_file, dpi=100)
+	plt.close(fig_best)
+
 
 def simulate_game():
 	population_size = 100
 	max_iterations = 2000
-	best = None
-	worst = None
 	state_size = 15 #aumenta o tamanho do cromossomo gradativamente, cinco estados a cada cinco gerações
 	i = 0
 	j = 0
@@ -17,7 +36,20 @@ def simulate_game():
 
 	app = App(len(population), display=True)
 
+	# Graphic lists
+	pop_max_error = []
+	pop_min_error = []
+	pop_mean = []
+	pop_best = []
+
+	fig_mean_file = 'pop_mean.png'
+	fig_best_file = 'pop_max.png'
+
 	while(j < max_iterations):
+		fig_mean, ax_mean = plt.subplots(figsize=(3, 3))
+		fig_best, ax_best = plt.subplots(figsize=(3, 3))
+		best = None
+		worst = None
 
 		d = int(state_size/2) #max number of repetitions
 
@@ -39,6 +71,20 @@ def simulate_game():
 
 			if not worst or population[i].fitness() > worst.fitness():
 				worst = population[i]
+
+		population_mean = np.mean([p.fitness() for p in population])
+
+		pop_mean.append(population_mean)
+		pop_min_error.append(worst.fitness() - population_mean)
+		pop_max_error.append(population_mean - best.fitness())
+
+		pop_best.append(best.fitness())
+
+		create_mean_graphic(pop_min_error, pop_max_error, pop_mean, ax_mean, fig_mean, fig_mean_file, j)
+		app.update_mean_graph(fig_mean_file)
+
+		create_best_graphic(pop_best, ax_best, fig_best, fig_best_file, j)
+		app.update_max_graph(fig_best_file)
 
 		new_population = []
 		

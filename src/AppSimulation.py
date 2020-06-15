@@ -38,6 +38,7 @@ class AppSimulation:
             pygame.mixer.music.set_volume(0.5)
 
             self.mean_graph_surface = pygame.Surface((300, 300))
+            self.best_graph_surface = pygame.Surface((300, 300))
 
     def run(self, actions, n):        
         self.restart()
@@ -122,7 +123,7 @@ class AppSimulation:
         for enemy in self.enemies:
             enemy.draw_enemy(self.level_one.surface)
 
-        self.main_screen.update_screen(self.level_one, self.mean_graph_surface)
+        self.main_screen.update_screen(self.level_one, self.mean_graph_surface, self.best_graph_surface)
         
         pygame.display.update()
 
@@ -130,4 +131,6 @@ class AppSimulation:
         mean_graph = pygame.image.load(fig_mean_file)
         self.mean_graph_surface.blit(mean_graph, (0, 0))
 
-
+    def update_max_graph(self, fig_best_file):
+        best_graph = pygame.image.load(fig_best_file)
+        self.best_graph_surface.blit(best_graph, (0, 0))
