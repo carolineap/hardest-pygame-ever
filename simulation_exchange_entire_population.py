@@ -37,9 +37,6 @@ def simulate_game(population_size, display):
 
         print("Starting simulation of generation " + str(j), state_size)
 
-        best = None
-        worst = None
-
         results = app.run([individual.state[:state_size] for individual in population], (state_size))
 
         for i in range(len(population)):
@@ -57,6 +54,12 @@ def simulate_game(population_size, display):
             if population[i].win:
                 if not best_win or population[i].fitness() > best_win.fitness():
                     best_win = population[i]
+
+            if not best or population[i].fitness() < best.fitness():
+                best = population[i]
+
+            if not worst or population[i].fitness() > worst.fitness():
+                worst = population[i]        
 
         new_population = []
 
@@ -76,8 +79,6 @@ def simulate_game(population_size, display):
         j += 1
 
         population =  new_population
-
-        j += 1
 
         increase_state += 1
 

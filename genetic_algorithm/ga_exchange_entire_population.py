@@ -20,8 +20,8 @@ def crossover(s1, s2, point):
 def selection(population):
     all_fitness = [individual.fitness() for individual in population]
 
-    total = sum(all_fitness)
-    p = [(1-(fitness/total)) for fitness in all_fitness]
+    max_f = max(all_fitness) + 1
+    p = [max_f - fitness for fitness in all_fitness]
 
     new = weighted_shuffle(population, p)
 
