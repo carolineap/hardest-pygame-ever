@@ -4,7 +4,6 @@ import random
 import os
 
 def simulate_game(population_size, sim_type="steady", display=False):
-
 	max_iterations = 500
 	state_size = 15 #aumenta o tamanho do cromossomo gradativamente, cinco estados a cada cinco gerações
 	i = 0
@@ -19,9 +18,11 @@ def simulate_game(population_size, sim_type="steady", display=False):
 
 	state_increment = 10
 
-	d = 10
+	d = int((state_size/2))
 
 	population = ga.create_initial_population(population_size, state_size, d)
+
+	best_win = None
 
 	app = App(len(population), display=display)
 
@@ -29,7 +30,6 @@ def simulate_game(population_size, sim_type="steady", display=False):
 		
 		best = None
 		worst = None
-		best_win = None
 
 		d = int((state_size/2)) #max number of repetitions
 
@@ -106,22 +106,14 @@ def simulate_game(population_size, sim_type="steady", display=False):
 	f.write(sim_type+","+str(population_size)+","+str(max_iterations)+","+str(j)+","+str(winners)+","+str(state_size)+","+str(n)+","+str(max_state_size)+","+str(best_win.action_best_position)+"\n")
 	f.close()
 
-	return best
+	return best_win
 
 if __name__ == "__main__":
-	population_size = [200]
+	population_size = [200, 200, 200, 500, 500, 500]
 	sim_type = ["steady", "roulette"]
 	bests = []
 	for p in population_size:
 		for t in sim_type:
 			bests.append(simulate_game(p, sim_type=t, display=True))
-
-	# app = App(1, display=True)
-
-	# while len(bests):
-	# 	best = bests.pop()
-	# 	input("Press Enter to continue...")
-	# 	app.run([best.state], (len(best.state)))
-
 
 	
