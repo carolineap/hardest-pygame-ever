@@ -10,6 +10,7 @@ class Individual:
         self.action_best_position = -1
         self.poison = 0
         self.win = False
+        self.death = -1
 
     def fitness(self):
         return self.poison + (1*self.best_position) + self.action_best_position #menor dist para o goal com o menor numero de acoes
@@ -53,6 +54,19 @@ def mutation(state):
 
     return state
 
+def mutationImproved(state, state_size, cross_point, idx_dadDeath):
+    if (cross_point > idx_dadDeath):#manteve a açao que o pai morreu na sequencia do filho gerado, então muta a partir dessa ação
+        d = random.randint(1, state_size - idx_dadDeath)
+        state[idx_dadDeath:idx_dadDeath+d] = [random.choice(list(Actions)).value]*d
+    else:#a ação que o pai morreu não esta mais no filho. Só muta por "obrigação"
+        d = random.randint(1, state_size - cross_point)
+        state[cross_point:cross_point+d] = [random.choice(list(Actions)).value]*d
+
+    #print(state_size, " ", cross_point, " ", idx_dadDeath, " ", d)
+    #print(state)
+    #print("-----------------")
+    return state
+    
 def create_initial_population(size, n_state, d):
     population = []
     for i in range(size):

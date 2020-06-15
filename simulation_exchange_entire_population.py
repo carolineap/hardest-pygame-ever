@@ -44,6 +44,7 @@ def simulate_game(population_size, display):
             population[i].best_position = results[i][1]
             population[i].action_best_position = results[i][2]
             population[i].poison = results[i][3]
+            population[i].death = results[i][4]
 
             best_win = population[i]
 
@@ -59,17 +60,22 @@ def simulate_game(population_size, display):
                 best = population[i]
 
             if not worst or population[i].fitness() > worst.fitness():
-                worst = population[i]        
+                worst = population[i]
 
         new_population = []
 
         parents_selection = ga.selection(population)
+        change_point = 0
         for i in range(int(len(parents_selection)/2)):
-            new_ind_1_crom, new_ind_2_crom = ga.crossover(parents_selection[i].state, parents_selection[i+1].state, state_size - 10)
+            change_point += int(crossover_pos)
+            new_ind_1_crom, new_ind_2_crom = ga.crossover(parents_selection[2*i].state, parents_selection[(2*i)+1].state, state_size - change_point)
+            #new_ind_1_crom, new_ind_2_crom = ga.crossover(parents_selection[i].state, parents_selection[i+1].state, state_size - 10)
 
             if random.random() <= mutation_rate:
-                new_ind_1_crom = ga.mutation(new_ind_1_crom)
-                new_ind_2_crom = ga.mutation(new_ind_2_crom)
+                new_ind_1_crom = ga.mutationImproved(new_ind_1_crom, len(new_ind_1_crom), state_size - change_point, parents_selection[2*i].death)
+                new_ind_2_crom = ga.mutationImproved(new_ind_2_crom, len(new_ind_2_crom), state_size - change_point, parents_selection[(2*i)+1].death)
+                #new_ind_1_crom = ga.mutation(new_ind_1_crom)
+                #new_ind_2_crom = ga.mutation(new_ind_2_crom)
 
             new_population.append(ga.Individual(new_ind_1_crom))
             new_population.append(ga.Individual(new_ind_2_crom))
