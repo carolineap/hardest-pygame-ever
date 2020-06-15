@@ -47,9 +47,9 @@ class AppSimulation:
             results.append([False, 1000, -1, 0])
 
         for i in range(n):
-            
-            ms_dt = self.clock.tick(60)    
-            s_dt = ms_dt / 1000
+            # Force a simulation time, this will make display looks
+            # slower or faster, but the genes simulation will be correct
+            s_dt = 1 / 60
 
             self.move_enemies(s_dt)
             
