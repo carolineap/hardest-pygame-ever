@@ -37,11 +37,20 @@ def increase_state(population, n_state, d):
     return population
 
 def mutation(state):
-    point_one = random.randint(0, len(state)-1)
-    point_two = random.randint(0, len(state)-1)
-    #print(point_one)
-    #print(point_two)
-    state[point_one], state[point_two] = state[point_two], state[point_one]
+    #swap apenas com dois pontos aleatórios
+    #point_one = random.randint(0, len(state)-1)
+    #point_two = random.randint(0, len(state)-1)
+    #state[point_one], state[point_two] = state[point_two], state[point_one]
+
+    #swap de uma sequencia
+    tam = len(state)//2
+    d = random.randint(1,tam)
+    p = tam-d
+    #print(d)
+    ##print(p)
+    state[p:p+d],state[p+d:p+2*d] = state[p+d:p+2*d],state[p:p+d]
+    #print(state)
+
     return state
 
 def create_initial_population(size, n_state, d):

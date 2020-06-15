@@ -15,4 +15,4 @@ def weighted_shuffle(original, weights):
 a = np.arange(1,1000)
 w = np.arange(1,1000)
 r = weighted_shuffle(a,w)
-print(r[:2])
+#print(r[:2])
