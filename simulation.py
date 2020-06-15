@@ -35,7 +35,7 @@ def simulate_game():
 	
 	now = datetime.now()
 	# dd/mm/YY-H:M:S
-	dt_string = now.strftime("%d/%m/%Y-%H:%M:%S")
+	dt_string = now.strftime("%d-%m-%Y--%H-%M-%S")
 
 	population = ga.create_initial_population(population_size, state_size, d)
 
