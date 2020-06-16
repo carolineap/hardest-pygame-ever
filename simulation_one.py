@@ -4,37 +4,39 @@ import random
 import numpy as np
 import matplotlib.pyplot as plt
 from datetime import datetime
-import os
+import write_tests as wt
 
 def create_mean_graphic(time, pop_min, pop_max, pop_mean, ax_mean, fig_mean, fig_mean_file, index):
 	pop_error = [pop_max, pop_min]
 	error_interval = (index // 50) + 1
 	ax_mean.errorbar(np.arange(index + 1), pop_mean, yerr=pop_error, errorevery=error_interval)
-
+	ax_mean.set_xlabel("geração")
+	ax_mean.set_ylabel('fitness')
 	fig_mean.suptitle('Mean Fitness')
 	fig_mean.savefig(str(time) + fig_mean_file, dpi=100)
 	plt.close(fig_mean)
 
 def create_best_graphic(time, pop_best, ax_best, fig_best, fig_best_file, index):
 	ax_best.plot(np.arange(index + 1), pop_best)
-
+	ax_best.set_xlabel("geração")
+	ax_best.set_ylabel('fitness')
 	fig_best.suptitle('Best Fitness')
 	fig_best.savefig(str(time) + fig_best_file, dpi=100)
 	plt.close(fig_best)
 
 def simulate_game(population_size, sim_type="steady", display=False):
-	max_iterations = 10
-	state_size = 15 #aumenta o tamanho do cromossomo gradativamente, cinco estados a cada cinco gerações
+	max_iterations = 500
+	state_size = 15 
 	i = 0
 	j = 0
+	
 	increase_state = 0
 	winners = 0
 	min_winners = int(0.5*population_size)
 
-	
 	now = datetime.now()
 	# dd/mm/YY-H:M:S
-	dt_string = now.strftime("Figures/" + sim_type + "-" + str(population_size) +"%d-%m-%Y-%H:%M:%S")
+	dt_string = now.strftime("Tests/Figures/" + sim_type + "-" + str(population_size) +"%d-%m-%Y-%H:%M:%S")
 	n = 5
 
 	max_state_size = 500
@@ -62,8 +64,8 @@ def simulate_game(population_size, sim_type="steady", display=False):
 
 	while(j < max_iterations and winners < min_winners):
 
-		fig_mean, ax_mean = plt.subplots(figsize=(3, 3))
-		fig_best, ax_best = plt.subplots(figsize=(3, 3))
+		fig_mean, ax_mean = plt.subplots(figsize=(6, 6))
+		fig_best, ax_best = plt.subplots(figsize=(6, 6))
 		
 		best = None
 		worst = None
@@ -146,29 +148,18 @@ def simulate_game(population_size, sim_type="steady", display=False):
 			population = ga.increase_state(population, state_size, d)
 			increase_state = 0
 
-	try:
-		filesize = os.path.getsize("simulation-one.csv")
-	except:
-		filesize = None
-
 	if not best_win:
 		best_solution = 0
 	else:
 		best_solution = best_win.action_best_position
 
-	f = open("simulation-one.csv", "a")
-	if not filesize:
-		f.write("type,population_size,max_iterations,iterations,winners,final_state_size,n,max_state_size,best_number_actions\n")
-	f.write(sim_type+","+str(population_size)+","+str(max_iterations)+","+str(j)+","+str(winners)+","+str(state_size)+","+str(n)+","+str(max_state_size)+","+str(best_solution)+"\n")
-	f.close()
-
-	return best_win
+	wt.write_csv("simulation_one", sim_type, population_size, max_iterations, j, winners, state_size, n, state_increment, max_state_size, best_solution)
 
 if __name__ == "__main__":
-	population_size = [200, 200, 200, 500, 500, 500]
+	population_size = [100, 300]
 	sim_type = ["steady", "roulette"]
 	bests = []
 	for p in population_size:
 		for t in sim_type:
-			bests.append(simulate_game(p, sim_type=t, display=True))
+			simulate_game(p, sim_type=t, display=True)
 

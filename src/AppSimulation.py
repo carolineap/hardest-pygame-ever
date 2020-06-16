@@ -44,8 +44,8 @@ class AppSimulation:
             # pygame.mixer.music.play(-1)
             # pygame.mixer.music.set_volume(0.5)
 
-            self.mean_graph_surface = pygame.Surface((300, 300))
-            self.best_graph_surface = pygame.Surface((300, 300))
+        self.mean_graph_surface = pygame.Surface((300, 300))
+        self.best_graph_surface = pygame.Surface((300, 300))
 
     def run(self, actions, n):        
         self.restart()
