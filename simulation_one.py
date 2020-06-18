@@ -27,7 +27,7 @@ def create_best_graphic(time, pop_best, ax_best, fig_best, fig_best_file, index)
 def simulate_game(seed, population_size, sim_type="steady", display=False):
 	random.seed(seed) 
 	
-	max_iterations = 10
+	max_iterations = 500
 	state_size = 15 
 	i = 0
 	j = 0
@@ -152,15 +152,17 @@ def simulate_game(seed, population_size, sim_type="steady", display=False):
 
 	if not best_win:
 		best_solution = 0
+		best_state = 0
 	else:
 		best_solution = best_win.action_best_position
+		best_state = best_win.state
 
-	wt.write_csv("simulation_one_"+str(population_size), sim_type, population_size, max_iterations, j, winners, state_size, n, state_increment, max_state_size, best_solution)
+	wt.write_csv("simulation_one_"+str(population_size), sim_type, population_size, max_iterations, j, winners, state_size, n, state_increment, max_state_size, best_solution,best_state)
 
 if __name__ == "__main__":
-	number_of_tests = 1
+	number_of_tests = 9
 	seeds = [i*10 for i in range(0, number_of_tests*2)] # x2 because has steady and roullete type
-	population_size = [100]*number_of_tests
+	population_size = [200]*number_of_tests
 	sim_type = ["steady", "roulette"]
 	i = 0
 	for p in population_size:
