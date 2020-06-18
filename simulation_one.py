@@ -24,10 +24,10 @@ def create_best_graphic(time, pop_best, ax_best, fig_best, fig_best_file, index)
 	fig_best.savefig(str(time) + fig_best_file, dpi=100)
 	plt.close(fig_best)
 
-def simulate_game(population_size, sim_type="steady", display=False):
-	random.seed(0) 
+def simulate_game(seed, population_size, sim_type="steady", display=False):
+	random.seed(seed) 
 	
-	max_iterations = 500
+	max_iterations = 10
 	state_size = 15 
 	i = 0
 	j = 0
@@ -159,9 +159,12 @@ def simulate_game(population_size, sim_type="steady", display=False):
 
 if __name__ == "__main__":
 	number_of_tests = 1
+	seeds = [i*10 for i in range(0, number_of_tests*2)] # x2 because has steady and roullete type
 	population_size = [100]*number_of_tests
 	sim_type = ["steady", "roulette"]
+	i = 0
 	for p in population_size:
 		for t in sim_type:
-			simulate_game(p, sim_type=t, display=False)
+			simulate_game(seeds[i], p, sim_type=t, display=False)
+			i += 1
 

@@ -33,7 +33,6 @@ def selection(population, crossover_rate=0.3):
     return clone, crossover
 
 def roulette_selection(population):
-    random.seed(0) 
     all_fitness = [ individual.fitness_roullete() for individual in population]
     total = (sum(all_fitness))
     new = []
@@ -49,7 +48,6 @@ def roulette_selection(population):
     return new
 
 def increase_state(population, n_state, d):
-    random.seed(0) 
     for individual in population:
         state = individual.state
         while len(state) < n_state:
@@ -59,7 +57,6 @@ def increase_state(population, n_state, d):
     return population
     
 def mutation(state, point, d):
-    random.seed(0) 
     d = random.randint(1, min(d, len(state))) 
 
     value = random.choice(list(Actions)).value
@@ -70,7 +67,6 @@ def mutation(state, point, d):
     return state
 
 def create_initial_population(size, n_state, d):
-    random.seed(0) 
     population = []
     for i in range(size):
         state = []
