@@ -11,7 +11,7 @@ from src.Enemy import Enemy
 from src.Score import Score
 
 class AppSimulation:
-    def __init__(self, population_size, display=True):
+    def __init__(self, population_size, display=True, poison=True):
         pygame.init()
         self.controller = Controller()
 
@@ -30,6 +30,7 @@ class AppSimulation:
 
         self.action = ""
         self.value = 0
+        self.poison = poison
 
         self.background_color = (200, 200, 200)
         self.level_one = LevelOne(30, self.background_color)
@@ -70,7 +71,7 @@ class AppSimulation:
                     self.input_loop(actions[j][i])
 
                     results[j][0] = self.exec_loop(s_dt, j) #win
-                    results[j][3] = self.level_one.poison_player(self.players[j])
+                    results[j][3] = self.level_one.poison_player(self.players[j]) if self.poison else 0
 
                     if results[j][1] > self.level_one.distance(self.players[j]):
                         results[j][1] = self.level_one.distance(self.players[j]) #get value and action for best position (closest to the goal)

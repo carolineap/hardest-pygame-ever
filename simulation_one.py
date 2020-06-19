@@ -5,6 +5,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 from datetime import datetime
 import write_tests as wt
+import os
+
 
 def create_mean_graphic(time, pop_min, pop_max, pop_mean, ax_mean, fig_mean, fig_mean_file, index):
 	pop_error = [pop_max, pop_min]
@@ -24,7 +26,7 @@ def create_best_graphic(time, pop_best, ax_best, fig_best, fig_best_file, index)
 	fig_best.savefig(str(time) + fig_best_file, dpi=100)
 	plt.close(fig_best)
 
-def simulate_game(seed, population_size, sim_type="steady", display=False):
+def simulate_game(seed, population_size, sim_type="steady", display=False, poison=True):
 	random.seed(seed) 
 	
 	max_iterations = 500
@@ -38,7 +40,10 @@ def simulate_game(seed, population_size, sim_type="steady", display=False):
 
 	now = datetime.now()
 	# dd/mm/YY-H:M:S
-	dt_string = now.strftime("Tests/Figures/" + sim_type + "-" + str(population_size) +"%d-%m-%Y-%H:%M:%S")
+	if not os.path.isdir("Tests/Figures/"):
+		os.mkdir("Tests/Figures/")
+
+	dt_string = now.strftime("Tests/Figures/" + sim_type + "-" + str(population_size) +"%d-%m-%Y-%H-%M-%S")
 	n = 5
 
 	max_state_size = 500
@@ -62,7 +67,7 @@ def simulate_game(seed, population_size, sim_type="steady", display=False):
 
 	best_win = None
 
-	app = App(len(population), display=display)
+	app = App(len(population), display=display, poison=poison)
 
 	while(j < max_iterations and winners < min_winners):
 
@@ -167,6 +172,6 @@ if __name__ == "__main__":
 	i = 0
 	for p in population_size:
 		for t in sim_type:
-			simulate_game(seeds[i], p, sim_type=t, display=False)
+			simulate_game(seeds[i], p, sim_type=t, display=True, poison=False)
 			i += 1
 
