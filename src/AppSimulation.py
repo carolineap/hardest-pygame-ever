@@ -137,8 +137,10 @@ class AppSimulation:
 
     def update_mean_graph(self, fig_mean_file):
         mean_graph = pygame.image.load(fig_mean_file)
-        self.mean_graph_surface.blit(mean_graph, (0, 0))
+        mean_graph_resized = pygame.transform.scale(mean_graph, (300, 300))
+        self.mean_graph_surface.blit(mean_graph_resized, (0, 0))
 
     def update_max_graph(self, fig_best_file):
         best_graph = pygame.image.load(fig_best_file)
-        self.best_graph_surface.blit(best_graph, (0, 0))
+        best_graph_resized = pygame.transform.scale(best_graph, (300, 300))
+        self.best_graph_surface.blit(best_graph_resized, (0, 0))

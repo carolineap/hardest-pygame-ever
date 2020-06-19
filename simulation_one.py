@@ -1,5 +1,6 @@
 from src.AppSimulation import AppSimulation as App
 import genetic_algorithm.ga as ga
+import genetic_algorithm.ga_exchange_entire_population as ga_entire
 import random
 import numpy as np
 import matplotlib.pyplot as plt
@@ -37,6 +38,9 @@ def simulate_game(seed, population_size, sim_type="steady", display=False, poiso
 	increase_state = 0
 	winners = 0
 	min_winners = int(0.5*population_size)
+
+	mutation_rate = 0.3
+	crossover_pos = 1
 
 	now = datetime.now()
 	# dd/mm/YY-H:M:S
@@ -119,7 +123,7 @@ def simulate_game(seed, population_size, sim_type="steady", display=False, poiso
 
 		new_population = []		
 
-		if type == "steady":
+		if sim_type == "steady":
 			clone_pop, crossover_pop = ga.selection(population)
 
 			for ind in clone_pop:
@@ -129,12 +133,12 @@ def simulate_game(seed, population_size, sim_type="steady", display=False, poiso
 					new_state = ga.mutation(ind.state, ind.action_best_position-random.randint(0, 5), d)
 				new_population.append(ga.Individual(new_state))
 			
-			for i in range(int(len(crossover_pop)/2), 2):
+			for i in range(0, int(len(crossover_pop) / 2), 2):
 				point = min(crossover_pop[i].action_best_position, crossover_pop[i+1].action_best_position)
 				ind1, ind2 = ga.crossover(crossover_pop[i].state, crossover_pop[i+1].state, point)
 				new_population.append(ga.Individual(ind1)) 
 				new_population.append(ga.Individual(ind2))
-		else:
+		elif sim_type == 'roulette':
 			selected = ga.roulette_selection(population)
 
 			for ind in selected:
@@ -143,6 +147,23 @@ def simulate_game(seed, population_size, sim_type="steady", display=False, poiso
 				else:
 					new_state = ga.mutation(ind.state, ind.action_best_position-random.randint(0, 5), d)
 				new_population.append(ga.Individual(new_state))
+		elif sim_type == 'entire':
+			parents_selection = ga_entire.selection(population)
+			change_point = 0
+			for i in range(int(len(parents_selection) / 2)):
+				change_point += int(crossover_pos)
+				new_ind_1_crom, new_ind_2_crom = ga.crossover(parents_selection[2 * i].state,
+															  parents_selection[(2 * i) + 1].state,
+															  state_size - change_point)
+
+				if random.random() <= mutation_rate:
+					new_ind_1_crom = ga_entire.mutation(new_ind_1_crom)
+					new_ind_2_crom = ga_entire.mutation(new_ind_2_crom)
+
+				new_population.append(ga_entire.Individual(new_ind_1_crom))
+				new_population.append(ga_entire.Individual(new_ind_2_crom))
+		else:
+			raise Exception("Sim type not defined")
 
 		population = new_population.copy()
 		
@@ -151,6 +172,7 @@ def simulate_game(seed, population_size, sim_type="steady", display=False, poiso
 		increase_state += 1
 
 		if (increase_state%n == 0 or best.action_best_position - 5 >= state_size) and (state_size+state_increment) <= max_state_size:
+			crossover_pos += 0.05
 			state_size += state_increment
 			population = ga.increase_state(population, state_size, d)
 			increase_state = 0
@@ -168,7 +190,8 @@ if __name__ == "__main__":
 	number_of_tests = 9
 	seeds = [i*10 for i in range(0, number_of_tests*2)] # x2 because has steady and roullete type
 	population_size = [200]*number_of_tests
-	sim_type = ["steady", "roulette"]
+	sim_type = ["entire", "steady", "roulette"]
+	# sim_type = ["steady", "entire", "roulette"]
 	i = 0
 	for p in population_size:
 		for t in sim_type:

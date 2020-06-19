@@ -3,21 +3,20 @@ import pygame
 
 
 class Enemy:
-	def __init__(self, initial_pos : pygame.Vector2, initial_direction, trajectory_type, trajectory_period, trajectory_begin, trajectory_end):
-		self.position = initial_pos
-		self.direction = initial_direction
+    def __init__(self, initial_pos : pygame.Vector2, initial_direction, trajectory_type, trajectory_period, trajectory_begin, trajectory_end):
+        self.position = initial_pos
+        self.direction = initial_direction
 
-		self.trajectory_type = trajectory_type
-		self.trajectory_begin = trajectory_begin
-		self.trajectory_end = trajectory_end
-		self.trajectory_period = trajectory_period
+        self.trajectory_type = trajectory_type
+        self.trajectory_begin = trajectory_begin
+        self.trajectory_end = trajectory_end
+        self.trajectory_period = trajectory_period
 
-		if trajectory_type == 'h':
-			self.velocity = pygame.Vector2((trajectory_end - trajectory_begin) / trajectory_period, 0)
+        if trajectory_type == 'h':
+            self.velocity = pygame.Vector2((trajectory_end - trajectory_begin) / trajectory_period, 0)
 
-		self.radius = 9
-		self.position = self.position.elementwise() - self.radius
-
+        self.radius = 9
+        self.position = self.position.elementwise() - self.radius
         self.color = (0, 0, 255)
         self.current_level = None
         self.moves_after_inversion = 0
