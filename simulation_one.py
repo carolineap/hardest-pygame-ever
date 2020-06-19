@@ -10,7 +10,7 @@ import os
 
 
 def create_mean_graphic(time, pop_min, pop_max, pop_mean, ax_mean, fig_mean, fig_mean_file, index):
-	pop_error = [pop_max, pop_min]
+	pop_error = [pop_min, pop_max]
 	error_interval = (index // 50) + 1
 	ax_mean.errorbar(np.arange(index + 1), pop_mean, yerr=pop_error, errorevery=error_interval)
 	ax_mean.set_xlabel("geração")
@@ -56,7 +56,12 @@ def simulate_game(seed, population_size, sim_type="steady", display=False, poiso
 
 	d = int((state_size/2))
 
-	population = ga.create_initial_population(population_size, state_size, d)
+	if sim_type == 'entire':
+		population = ga_entire.create_initial_population(population_size, state_size, d)
+	elif sim_type == 'steady' or sim_type == 'roulette':
+		population = ga.create_initial_population(population_size, state_size, d)
+	else:
+		raise Exception("Sim type not defined")
 
 	best_win = None
 
@@ -101,17 +106,17 @@ def simulate_game(seed, population_size, sim_type="steady", display=False, poiso
 				if not best_win or population[i].fitness() > best_win.fitness():
 					best_win = population[i]
 
-			if not best or population[i].fitness() > best.fitness():
+			if not best or population[i].fitness() < best.fitness():
 				best = population[i]
 
-			if not worst or population[i].fitness() < worst.fitness():
+			if not worst or population[i].fitness() > worst.fitness():
 				worst = population[i]
 
 		population_mean = np.mean([p.fitness() for p in population])
 
 		pop_mean.append(population_mean)
-		pop_min_error.append(worst.fitness() - population_mean)
-		pop_max_error.append(population_mean - best.fitness())
+		pop_max_error.append(worst.fitness() - population_mean)
+		pop_min_error.append(population_mean - best.fitness())
 
 		pop_best.append(best.fitness())
 
@@ -195,6 +200,6 @@ if __name__ == "__main__":
 	i = 0
 	for p in population_size:
 		for t in sim_type:
-			simulate_game(seeds[i], p, sim_type=t, display=True, poison=False)
+			simulate_game(seeds[i], p, sim_type=t, display=True, poison=True)
 			i += 1
 

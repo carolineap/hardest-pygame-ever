@@ -12,7 +12,7 @@ class Individual:
         self.win = False
 
     def fitness(self):
-        return self.poison + (1*self.best_position) + self.action_best_position #menor dist para o goal com o menor numero de acoes
+        return self.poison + (2 * self.best_position) # + self.action_best_position #menor dist para o goal com o menor numero de acoes
 #
 def crossover(s1, s2, point):
     return s1[:point] + s2[point:], s2[:point] + s1[point:]
