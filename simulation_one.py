@@ -157,13 +157,13 @@ def simulate_game(seed, population_size, sim_type="steady", display=False, poiso
 			change_point = 0
 			for i in range(int(len(parents_selection) / 2)):
 				change_point += int(crossover_pos)
-				new_ind_1_crom, new_ind_2_crom = ga.crossover(parents_selection[2 * i].state,
-															  parents_selection[(2 * i) + 1].state,
-															  state_size - change_point)
+				new_ind_1_crom, new_ind_2_crom = ga.crossover(parents_selection[i].state, parents_selection[i+1].state, change_point)
 
 				if random.random() <= mutation_rate:
-					new_ind_1_crom = ga_entire.mutation(new_ind_1_crom)
-					new_ind_2_crom = ga_entire.mutation(new_ind_2_crom)
+					new_ind_1_crom = ga_entire.mutation(new_ind_1_crom, len(new_ind_1_crom), state_size - change_point,
+												 parents_selection[2 * i].death)
+					new_ind_2_crom = ga_entire.mutation(new_ind_2_crom, len(new_ind_2_crom), state_size - change_point,
+												 parents_selection[(2 * i) + 1].death)
 
 				new_population.append(ga_entire.Individual(new_ind_1_crom))
 				new_population.append(ga_entire.Individual(new_ind_2_crom))
