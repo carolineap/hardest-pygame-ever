@@ -48,12 +48,12 @@ class AppSimulation:
         self.mean_graph_surface = pygame.Surface((300, 300))
         self.best_graph_surface = pygame.Surface((300, 300))
 
-    def run(self, actions, n):        
+    def run(self, actions, n):
         self.restart()
-        
+
         results = []
         for i in range(len(self.players)):
-            results.append([False, 1000, -1, 0])
+            results.append([False, 1000, -1, 0, n-1])
 
         for i in range(n):
             # Force a simulation time, this will make display looks
@@ -61,7 +61,7 @@ class AppSimulation:
             s_dt = 1 / 60
 
             self.move_enemies(s_dt)
-            
+
             not_dead = False
 
             for j in range(len(self.players)):
@@ -70,13 +70,17 @@ class AppSimulation:
                     not_dead = True
                     self.input_loop(actions[j][i])
 
-                    results[j][0] = self.exec_loop(s_dt, j) #win
+                    results[j][0], death = self.exec_loop(s_dt, j) #win
+
+                    if (death == 1):
+                        results[j][4] = i #marca a posição que morreu
+
                     results[j][3] = self.level_one.poison_player(self.players[j]) if self.poison else 0
 
                     if results[j][0]:
                         results[j][1] = 0
                         results[j][2] = i
-                    else:    
+                    else:
                         if results[j][1] > self.level_one.distance(self.players[j]):
                             results[j][1] = self.level_one.distance(self.players[j]) #get value and action for best position (closest to the goal)
                             results[j][2] = i
@@ -84,7 +88,7 @@ class AppSimulation:
             if not not_dead:
                 break
             if self.display:
-                self.render_loop()  
+                self.render_loop()
 
         return results
 
@@ -104,19 +108,19 @@ class AppSimulation:
         self.players[j].move(self.value, dt)
 
         if self.players[j].is_dead(self.enemies):
-            return False
-            
+            return False,1
+
         # Check if won
         if self.level_one.end_area.colliderect(self.players[j].collision_box()):
-            return True
+            return True,0
 
-        return False
-                
+        return False,0
+
     def restart(self):
         for player in self.players:
             player.set_init_pos(self.level_one.player_init)
             player.set_current_level(self.level_one)
-            player.set_dead(False) 
+            player.set_dead(False)
 
         enemy_mov_period = 1.5
         self.enemies = [
@@ -131,12 +135,12 @@ class AppSimulation:
         for player in self.drawable_players:
             if not player.dead:
                 player.draw_player(self.level_one.surface)
-            
+
         for enemy in self.enemies:
             enemy.draw_enemy(self.level_one.surface)
 
         self.main_screen.update_screen(self.level_one, self.mean_graph_surface, self.best_graph_surface)
-        
+
         pygame.display.update()
 
     def update_mean_graph(self, fig_mean_file):
