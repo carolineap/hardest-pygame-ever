@@ -103,7 +103,7 @@ def simulate_game(seed, population_size, sim_type="steady", display=False, poiso
 				winners += 1
 
 			if population[i].win:
-				if not best_win or population[i].fitness() > best_win.fitness():
+				if not best_win or population[i].fitness() < best_win.fitness():
 					best_win = population[i]
 
 			if not best or population[i].fitness() < best.fitness():
@@ -157,7 +157,7 @@ def simulate_game(seed, population_size, sim_type="steady", display=False, poiso
 			change_point = 0
 			for i in range(int(len(parents_selection) / 2)):
 				change_point += int(crossover_pos)
-				new_ind_1_crom, new_ind_2_crom = ga.crossover(parents_selection[i].state, parents_selection[i+1].state, change_point)
+				new_ind_1_crom, new_ind_2_crom = ga.crossover(parents_selection[2*i].state, parents_selection[(2*i)+1].state, change_point)
 
 				if random.random() <= mutation_rate:
 					new_ind_1_crom = ga_entire.mutation(new_ind_1_crom, len(new_ind_1_crom), state_size - change_point,
@@ -193,10 +193,9 @@ def simulate_game(seed, population_size, sim_type="steady", display=False, poiso
 
 if __name__ == "__main__":
 	number_of_tests = 9
-	seeds = [i*10 for i in range(0, number_of_tests*2)] # x2 because has steady and roullete type
+	sim_type = ["steady", "entire", "roulette"]
+	seeds = [i*10 for i in range(0, number_of_tests*len(sim_type))] # x2 because has steady and roullete type
 	population_size = [200]*number_of_tests
-	sim_type = ["entire", "steady", "roulette"]
-	# sim_type = ["steady", "entire", "roulette"]
 	i = 0
 	for p in population_size:
 		for t in sim_type:

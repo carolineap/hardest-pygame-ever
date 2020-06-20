@@ -73,9 +73,13 @@ class AppSimulation:
                     results[j][0] = self.exec_loop(s_dt, j) #win
                     results[j][3] = self.level_one.poison_player(self.players[j]) if self.poison else 0
 
-                    if results[j][1] > self.level_one.distance(self.players[j]):
-                        results[j][1] = self.level_one.distance(self.players[j]) #get value and action for best position (closest to the goal)
+                    if results[j][0]:
+                        results[j][1] = 0
                         results[j][2] = i
+                    else:    
+                        if results[j][1] > self.level_one.distance(self.players[j]):
+                            results[j][1] = self.level_one.distance(self.players[j]) #get value and action for best position (closest to the goal)
+                            results[j][2] = i
 
             if not not_dead:
                 break
