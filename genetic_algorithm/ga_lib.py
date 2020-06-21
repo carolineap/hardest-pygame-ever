@@ -9,7 +9,7 @@ def weighted_shuffle(original, weights):
          rnd = random() * cum_weights[-1]
          j = bisect_right(cum_weights, rnd)
          shuffed_list[i] = original[j]
-         cum_weights[j:] -= weights[j]
+         # cum_weights[j:] -= weights[j]
     return shuffed_list
 
 a = np.arange(1,1000)

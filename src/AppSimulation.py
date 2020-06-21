@@ -53,7 +53,7 @@ class AppSimulation:
         
         results = []
         for i in range(len(self.players)):
-            results.append([False, 1000, -1, 0])
+            results.append([False, 1000, -1, 0, n-1])
 
         for i in range(n):
             # Force a simulation time, this will make display looks
@@ -70,8 +70,11 @@ class AppSimulation:
                     not_dead = True
                     self.input_loop(actions[j][i])
 
-                    results[j][0] = self.exec_loop(s_dt, j) #win
+                    results[j][0], death = self.exec_loop(s_dt, j)
                     results[j][3] = self.level_one.poison_player(self.players[j]) if self.poison else 0
+
+                    if (death == 1):
+                        results[j][4] = i
 
                     if results[j][0]:
                         results[j][1] = 0
@@ -104,13 +107,13 @@ class AppSimulation:
         self.players[j].move(self.value, dt)
 
         if self.players[j].is_dead(self.enemies):
-            return False
+            return False, 1
             
         # Check if won
         if self.level_one.end_area.colliderect(self.players[j].collision_box()):
-            return True
+            return True, 0
 
-        return False
+        return False, 0
                 
     def restart(self):
         for player in self.players:

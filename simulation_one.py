@@ -97,6 +97,7 @@ def simulate_game(seed, population_size, sim_type="steady", display=False, poiso
 			population[i].best_position = results[i][1]
 			population[i].action_best_position = results[i][2]
 			population[i].poison = results[i][3]
+			population[i].death = results[i][4]
 
 			if population[i].win:
 				print("Alguém venceu!!!")
@@ -154,10 +155,12 @@ def simulate_game(seed, population_size, sim_type="steady", display=False, poiso
 				new_population.append(ga.Individual(new_state))
 		elif sim_type == 'entire':
 			parents_selection = ga_entire.selection(population)
+			# parents_selection = ga_entire.roulette_selection(population)
 			change_point = 0
 			for i in range(int(len(parents_selection) / 2)):
 				change_point += int(crossover_pos)
-				new_ind_1_crom, new_ind_2_crom = ga.crossover(parents_selection[2*i].state, parents_selection[(2*i)+1].state, change_point)
+				change_point = min(parents_selection[2*i].action_best_position, parents_selection[2*i + 1].action_best_position)
+				new_ind_1_crom, new_ind_2_crom = ga_entire.crossover(parents_selection[2*i].state, parents_selection[(2*i)+1].state, change_point)
 
 				if random.random() <= mutation_rate:
 					new_ind_1_crom = ga_entire.mutation(new_ind_1_crom, len(new_ind_1_crom), state_size - change_point,
@@ -189,16 +192,25 @@ def simulate_game(seed, population_size, sim_type="steady", display=False, poiso
 		best_solution = best_win.action_best_position
 		best_state = best_win.state
 
-	wt.write_csv("simulation_one_"+str(population_size), sim_type, population_size, max_iterations, j, winners, state_size, n, state_increment, max_state_size, best_solution,best_state)
+	wt.write_csv("simulation_one_"+str(population_size), sim_type, seed, population_size, max_iterations, j, winners, state_size, n, state_increment, max_state_size, best_solution,best_state)
 
 if __name__ == "__main__":
+
+	# max_iterations = 1000
+	# state_size = 15
+	# mutation_rate = 0.3
+	# n = 5
+	# max_state_size = 900
+	# state_increment = 10
+	# population_size = 500
+	# poison = True e False
+
 	number_of_tests = 9
-	sim_type = ["steady", "entire", "roulette"]
-	seeds = [i*10 for i in range(0, number_of_tests*len(sim_type))] # x2 because has steady and roullete type
+	sim_type = ["entire", "steady", "roulette"]
+	seeds = [i*10 for i in range(0, number_of_tests)] # x2 because has steady and roullete type
 	population_size = [200]*number_of_tests
-	i = 0
-	for p in population_size:
+
+	for i in range(number_of_tests):
 		for t in sim_type:
-			simulate_game(seeds[i], p, sim_type=t, display=True, poison=True)
-			i += 1
+			simulate_game(seeds[i], population_size[i], sim_type=t, display=False, poison=True)
 
