@@ -29,6 +29,22 @@ must clearly define:
 ## Project 2 - Solution Video
 The solution video can be found at: https://youtu.be/xVuVL4bCjSo
 
+## Project 2 - Repository Structure
+
+The [figs]https://github.com/gabrielpreviato/hardest-pygame-ever/tree/master/figs) directory contains the images that are displayed in the main notebook.
+
+The [src](https://github.com/gabrielpreviato/hardest-pygame-ever/tree/master/src) directory contains the implementation of the World Hardest Pygame.
+
+The [genetic_algorithm](https://github.com/gabrielpreviato/hardest-pygame-ever/tree/master/genetic_algorithm) directory contains the implementation of the Genetic Algotirhm.
+
+The [pacman](https://github.com/gabrielpreviato/mo416-2020s1-unicamp/tree/master/project1/pacman.ipynb) is the Jupyter Notebook used for evaluating the search algorithms, all data collected was then compiled in the [results](https://github.com/gabrielpreviato/mo416-2020s1-unicamp/tree/master/project1/results.csv) file.
+
+The [whg](https://github.com/gabrielpreviato/hardest-pygame-ever/blob/master/whg.ipynb) is the Jupyter Notebook with the problem description, discussion and analysis over the genetic algorithm in the World Hardest Pygame solution.
+
+The [simulation](https://github.com/gabrielpreviato/hardest-pygame-ever/blob/master/simulation.py) is the Python file that executes the WHG with the Genetic Algorithms.
+
+The [results](https://github.com/gabrielpreviato/hardest-pygame-ever/blob/master/results.csv) is the CSV file with the results obtained and discussed in the [whg](https://github.com/gabrielpreviato/hardest-pygame-ever/blob/master/whg.ipynb).
+
 ## Project 2 - Division of Tasks
 All of the members of the group,
 - Caroline Aparecida de Paula Silva (265188)
