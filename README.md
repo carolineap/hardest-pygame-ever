@@ -31,7 +31,7 @@ The solution video can be found at: https://youtu.be/xVuVL4bCjSo
 
 ## Project 2 - Repository Structure
 
-The [figs]https://github.com/gabrielpreviato/hardest-pygame-ever/tree/master/figs) directory contains the images that are displayed in the main notebook.
+The [figs](https://github.com/gabrielpreviato/hardest-pygame-ever/tree/master/figs) directory contains the images that are displayed in the main notebook.
 
 The [src](https://github.com/gabrielpreviato/hardest-pygame-ever/tree/master/src) directory contains the implementation of the World Hardest Pygame.
 
