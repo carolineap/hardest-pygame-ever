@@ -11,7 +11,7 @@ class Individual:
         self.win = False
         
     def fitness(self): 
-        return self.poison + 2*self.best_position + self.action_best_position #menor dist para o goal com o menor numero de acoes
+        return self.poison + 2 * self.best_position + self.action_best_position #menor dist para o goal com o menor numero de acoes
 
     def fitness_roullete(self):
         return 1/self.fitness()
@@ -20,8 +20,8 @@ def crossover(s1, s2, point):
     return s1[:point] + s2[point:], s2[:point] + s1[point:]
 
 def selection(population, crossover_rate=0.3): 
-    k_crossover = int(len(population)*crossover_rate)
-    k_clone = len(population) - k_crossover
+    k_crossover = int(len(population)*crossover_rate * 2)
+    k_clone = len(population) - int(k_crossover / 2)
     
     all_fitness = [ individual.fitness() for individual in population]
     total = int(sum(all_fitness))
@@ -29,7 +29,7 @@ def selection(population, crossover_rate=0.3):
 
     clone = random.choices(population, p, k=k_clone)
     crossover = random.choices(population, p, k=k_crossover)
-    crossover = random.shuffle(crossover)
+    random.shuffle(crossover)
 
     return clone, crossover
 

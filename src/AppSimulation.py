@@ -53,7 +53,7 @@ class AppSimulation:
         
         results = []
         for i in range(len(self.players)):
-            results.append([False, 1000, -1, 0])
+            results.append([False, 1000, -1, 0, n-1])
 
         for i in range(n):
             # Force a simulation time, this will make display looks
@@ -70,12 +70,19 @@ class AppSimulation:
                     not_dead = True
                     self.input_loop(actions[j][i])
 
-                    results[j][0] = self.exec_loop(s_dt, j) #win
+                    results[j][0], death = self.exec_loop(s_dt, j)
                     results[j][3] = self.level_one.poison_player(self.players[j]) if self.poison else 0
 
-                    if results[j][1] > self.level_one.distance(self.players[j]):
-                        results[j][1] = self.level_one.distance(self.players[j]) #get value and action for best position (closest to the goal)
+                    if (death == 1):
+                        results[j][4] = i
+
+                    if results[j][0]:
+                        results[j][1] = 0
                         results[j][2] = i
+                    else:    
+                        if results[j][1] > self.level_one.distance(self.players[j]):
+                            results[j][1] = self.level_one.distance(self.players[j]) #get value and action for best position (closest to the goal)
+                            results[j][2] = i
 
             if not not_dead:
                 break
@@ -100,13 +107,13 @@ class AppSimulation:
         self.players[j].move(self.value, dt)
 
         if self.players[j].is_dead(self.enemies):
-            return False
+            return False, 1
             
         # Check if won
         if self.level_one.end_area.colliderect(self.players[j].collision_box()):
-            return True
+            return True, 0
 
-        return False
+        return False, 0
                 
     def restart(self):
         for player in self.players:
@@ -137,8 +144,10 @@ class AppSimulation:
 
     def update_mean_graph(self, fig_mean_file):
         mean_graph = pygame.image.load(fig_mean_file)
-        self.mean_graph_surface.blit(mean_graph, (0, 0))
+        mean_graph_resized = pygame.transform.scale(mean_graph, (300, 300))
+        self.mean_graph_surface.blit(mean_graph_resized, (0, 0))
 
     def update_max_graph(self, fig_best_file):
         best_graph = pygame.image.load(fig_best_file)
-        self.best_graph_surface.blit(best_graph, (0, 0))
+        best_graph_resized = pygame.transform.scale(best_graph, (300, 300))
+        self.best_graph_surface.blit(best_graph_resized, (0, 0))

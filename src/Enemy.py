@@ -17,7 +17,6 @@ class Enemy:
 
         self.radius = 9
         self.position = self.position.elementwise() - self.radius
-
         self.color = (0, 0, 255)
         self.current_level = None
         self.moves_after_inversion = 0
